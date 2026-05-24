@@ -1,0 +1,9 @@
+\i sql/01_create_extensions.sql
+\i sql/02_create_types.sql
+\i sql/03_create_tables.sql
+\i sql/04_create_indexes.sql
+\i sql/05_create_functions.sql
+\i sql/06_create_triggers.sql
+\i sql/07_create_procedures.sql
+\i sql/08_create_views.sql
+\i sql/09_seed_sample_data.sql

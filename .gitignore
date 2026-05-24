@@ -1,0 +1,26 @@
+.env
+.env.*
+!.env.example
+
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+*.log
+*.tmp
+
+# Database dumps
+*.dump
+*.backup
+*.sql.gz
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Do not commit real import files with customer/sales data
+import/private/
+backup/private/

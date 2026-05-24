@@ -1,0 +1,39 @@
+name: PostgreSQL SQL Check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test-sql:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgis/postgis:16-3.4
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: silkroad
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d silkroad"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install PostgreSQL client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+
+      - name: Run database scripts
+        env:
+          PGPASSWORD: postgres
+        run: |
+          psql -h localhost -U postgres -d silkroad -v ON_ERROR_STOP=1 -f sql/run_all.sql
