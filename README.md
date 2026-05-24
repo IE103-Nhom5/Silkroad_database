@@ -61,48 +61,4 @@ Kiểm thử nhanh:
 psql -d silkroad -f sql/10_test_queries.sql
 ```
 
-## 3. Chạy trên Supabase
-
-Có hai cách:
-
-### Cách 1: SQL Editor
-
-Mở Supabase Dashboard → SQL Editor → chạy lần lượt các file:
-
-1. `01_create_extensions.sql`
-2. `02_create_types.sql`
-3. `03_create_tables.sql`
-4. `04_create_indexes.sql`
-5. `05_create_functions.sql`
-6. `06_create_triggers.sql`
-7. `07_create_procedures.sql`
-8. `08_create_views.sql`
-9. `09_seed_sample_data.sql` nếu cần dữ liệu mẫu
-
-### Cách 2: Supabase migration
-
-Dùng file migration trong:
-
-```text
-supabase/migrations/20260524000000_init_silkroad.sql
-```
-
-## 4. Lưu ý bảo mật
-
-Không đưa các thông tin sau lên GitHub:
-
-- Mật khẩu database thật
-- Supabase connection string thật
-- Access token của marketplace
-- API key thanh toán
-- Dữ liệu khách hàng thật
-
-Chỉ dùng `.env.example` để mô tả biến môi trường cần có.
-
-## 5. Gợi ý đưa vào báo cáo
-
-Phần giải thích cách quản lý code bằng GitHub có sẵn tại:
-
-```text
-docs/github_section_for_report.md
 ```
