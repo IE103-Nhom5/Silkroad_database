@@ -1,206 +1,589 @@
--- ROLE
+-- 1. Vai trò người dùng mẫu
 INSERT INTO ROLE (RoleID, RoleName, Permissions, Description) VALUES
-('00000000-0000-0000-0000-000000000101', 'admin',
- ARRAY['stock.view','stock.adjust','purchase_order.create','purchase_order.approve','transfer.create','transfer.approve','order.create','order.cancel','report.export','channel.manage','user.manage'],
- 'Quản trị viên toàn hệ thống'),
-('00000000-0000-0000-0000-000000000102', 'branch_manager',
- ARRAY['stock.view','stock.adjust','purchase_order.approve','transfer.approve','order.create','order.cancel','report.export'],
- 'Quản lý chi nhánh'),
-('00000000-0000-0000-0000-000000000103', 'warehouse_staff',
- ARRAY['stock.view','purchase_order.create','transfer.create'],
- 'Nhân viên kho'),
-('00000000-0000-0000-0000-000000000104', 'sales_staff',
- ARRAY['stock.view','order.create'],
- 'Nhân viên bán hàng')
+    ('00000000-0000-0000-0000-000000000101', 'admin',
+     ARRAY['stock.view','stock.adjust','purchase_order.create','purchase_order.approve','transfer.create','transfer.approve','order.create','order.cancel','report.export','channel.manage','user.manage'],
+     'Quản trị viên toàn hệ thống'),
+    ('00000000-0000-0000-0000-000000000102', 'warehouse_staff',
+     ARRAY['stock.view','purchase_order.create','transfer.create'],
+     'Nhân viên kho'),
+    ('00000000-0000-0000-0000-000000000103', 'sales_staff',
+     ARRAY['stock.view','order.create'],
+     'Nhân viên bán hàng')
 ON CONFLICT (RoleID) DO NOTHING;
 
--- BRANCH
-INSERT INTO BRANCH (BranchID, BranchName, BranchType, Address, Province, PhoneNumber, Email, Status) VALUES
-('00000000-0000-0000-0000-000000000201', 'Kho trung tâm SilkRoad', 'central_warehouse', 'Khu công nghiệp Tân Bình, TP.HCM', 'TP. Hồ Chí Minh', '0280000001', 'warehouse@silkroad.local', 'active'),
-('00000000-0000-0000-0000-000000000202', 'Cửa hàng Quận 1', 'retail_store', 'Nguyễn Huệ, Quận 1, TP.HCM', 'TP. Hồ Chí Minh', '0280000002', 'q1@silkroad.local', 'active')
-ON CONFLICT (BranchID) DO NOTHING;
 
--- USERS
-INSERT INTO USERS (UserID, FullName, Username, PasswordHash, RoleID, BranchID, Status) VALUES
-('00000000-0000-0000-0000-000000000301', 'Admin SilkRoad', 'admin', '$2b$12$examplebcryptpasswordhash0000000000000000000000000', '00000000-0000-0000-0000-000000000101', NULL, 'active'),
-('00000000-0000-0000-0000-000000000302', 'Nguyễn Văn Kho', 'warehouse01', '$2b$12$examplebcryptpasswordhash0000000000000000000000001', '00000000-0000-0000-0000-000000000103', '00000000-0000-0000-0000-000000000201', 'active'),
-('00000000-0000-0000-0000-000000000303', 'Trần Thị Bán Hàng', 'sales01', '$2b$12$examplebcryptpasswordhash0000000000000000000000002', '00000000-0000-0000-0000-000000000104', '00000000-0000-0000-0000-000000000202', 'active'),
-('00000000-0000-0000-0000-000000000304', 'Marketplace System', 'system_marketplace', '$2b$12$examplebcryptpasswordhash0000000000000000000000003', '00000000-0000-0000-0000-000000000101', NULL, 'active')
-ON CONFLICT (UserID) DO NOTHING;
+-- 2. Danh mục sản phẩm
 
--- PRODUCT CATEGORY
 INSERT INTO PRODUCT_CATEGORY (CategoryID, ParentCategoryID, CategoryName, Slug, DisplayOrder, Status) VALUES
-('00000000-0000-0000-0000-000000000401', NULL, 'Thời trang nữ', 'thoi-trang-nu', 1, 'active'),
-('00000000-0000-0000-0000-000000000402', '00000000-0000-0000-0000-000000000401', 'Áo sơ mi nữ', 'ao-so-mi-nu', 1, 'active')
-ON CONFLICT (CategoryID) DO NOTHING;
+    ('080604fd-821b-5ed5-850b-60df778cd422', NULL, 'Áo Nam', 'ao-nam', 0, 'active'),
+    ('0e053562-159e-5a31-8cbd-f53d45206399', NULL, 'Áo Nữ', 'ao-nu', 0, 'active'),
+    ('fce61bfc-0305-5211-b8e8-80e6a199f431', NULL, 'Quần Nam', 'quan-nam', 0, 'active'),
+    ('c0b308ad-69d7-5c19-9015-fb7de1700b7b', NULL, 'Thời Trang Nữ', 'thoi-trang-nu', 0, 'active'),
+    ('89d71340-9a81-5082-8244-f262c1f9022c', NULL, 'Thời Trang Nam', 'thoi-trang-nam', 0, 'active'),
+    ('037d9241-ef12-54a9-ba70-9c21d601efe6', '080604fd-821b-5ed5-850b-60df778cd422', 'Áo Thun Nam', 'ao-thun-nam', 0, 'active'),
+    ('0451c67b-6d95-5f71-9562-d1146570f651', '0e053562-159e-5a31-8cbd-f53d45206399', 'Áo Thun Nữ', 'ao-thun-nu', 0, 'active'),
+    ('d383ad89-8952-5636-9133-fee5b77101bd', '080604fd-821b-5ed5-850b-60df778cd422', 'Smart Shirt - OXFORD', 'smart-shirt-oxford', 0, 'active'),
+    ('5f711171-48e4-5a7a-ac77-076856431884', 'fce61bfc-0305-5211-b8e8-80e6a199f431', 'Quần Jean Nam', 'quan-jean-nam', 0, 'active'),
+    ('4a96415c-1819-5f32-bf1e-960d8427b115', 'c0b308ad-69d7-5c19-9015-fb7de1700b7b', 'Chân Váy', 'chan-vay', 0, 'active'),
+    ('4b30088c-952e-5223-a403-37947ad31cb8', '89d71340-9a81-5082-8244-f262c1f9022c', 'Áo Vest Nam', 'ao-vest-nam', 0, 'active'),
+    ('c3fae192-f3f9-568c-aba3-b373c212ec1f', '89d71340-9a81-5082-8244-f262c1f9022c', 'Quần Short Nam', 'quan-short-nam', 0, 'active'),
+    ('247dbfe5-6cee-5f5f-b27f-40cc3874bc72', '89d71340-9a81-5082-8244-f262c1f9022c', 'Áo khoác nam', 'ao-khoac-nam', 0, 'active'),
+    ('23775f4a-3bf8-5eb4-9316-7c8c50ca223b', 'c0b308ad-69d7-5c19-9015-fb7de1700b7b', 'Áo len nữ', 'ao-len-nu', 0, 'active'),
+    ('a38325a2-3f7d-5ebe-a23d-80525c6450ec', 'c0b308ad-69d7-5c19-9015-fb7de1700b7b', 'Đầm nữ', 'am-nu', 0, 'active'),
+    ('e3398123-334f-55b5-ae75-2179d3e69a12', 'c0b308ad-69d7-5c19-9015-fb7de1700b7b', 'Quần Nỉ Nữ', 'quan-ni-nu', 0, 'active')
+ON CONFLICT (CategoryID) DO UPDATE SET CategoryName = EXCLUDED.CategoryName, ParentCategoryID = EXCLUDED.ParentCategoryID, Status = EXCLUDED.Status;
 
--- PRODUCT
-INSERT INTO PRODUCT (
-    ProductID, CategoryID, ProductName, Slug, Brand, Gender,
-    Description, DefaultSellingPrice, Tags, CollectionName, Status, DynamicAttributes
-) VALUES
-('00000000-0000-0000-0000-000000000501',
- '00000000-0000-0000-0000-000000000402',
- 'Áo Sơ Mi Lụa Cổ V Thanh Lịch',
- 'ao-so-mi-lua-co-v-thanh-lich',
- 'SilkRoad',
- 'female',
- 'Áo sơ mi lụa cổ V phù hợp môi trường công sở.',
- 350000,
- ARRAY['new-arrival','best-seller'],
- 'Thu Đông 2026',
- 'active',
- '{"chat_lieu": "lụa", "kieu_co": "cổ V", "kieu_tay": "tay dài", "form_dang": "regular fit"}'::JSONB)
-ON CONFLICT (ProductID) DO NOTHING;
 
--- ATTRIBUTE
-INSERT INTO ATTRIBUTE (AttributeID, AttributeType, Value, DisplayValue, HexCode, SortOrder, Status) VALUES
-('00000000-0000-0000-0000-000000000601', 'size', 'S', 'Size S', NULL, 1, 'active'),
-('00000000-0000-0000-0000-000000000602', 'size', 'M', 'Size M', NULL, 2, 'active'),
-('00000000-0000-0000-0000-000000000603', 'color', 'WHITE', 'Trắng', '#FFFFFF', 1, 'active'),
-('00000000-0000-0000-0000-000000000604', 'color', 'NAVY', 'Xanh navy', '#1B3A6B', 2, 'active')
-ON CONFLICT (AttributeID) DO NOTHING;
 
--- PRODUCT VARIANT
-INSERT INTO PRODUCT_VARIANT (
-    VariantID, ProductID, SizeAttributeID, ColorAttributeID, SKU, Barcode,
-    CostPrice, SellingPrice, Weight, Status
-) VALUES
-('00000000-0000-0000-0000-000000000701',
- '00000000-0000-0000-0000-000000000501',
- '00000000-0000-0000-0000-000000000601',
- '00000000-0000-0000-0000-000000000603',
- 'SR-SML-WHT-S',
- '893000000001',
- 150000,
- 350000,
- 0.250,
- 'active'),
-('00000000-0000-0000-0000-000000000702',
- '00000000-0000-0000-0000-000000000501',
- '00000000-0000-0000-0000-000000000602',
- '00000000-0000-0000-0000-000000000604',
- 'SR-SML-NVY-M',
- '893000000002',
- 150000,
- 350000,
- 0.260,
- 'active')
-ON CONFLICT (VariantID) DO NOTHING;
+-- 3. Chi nhánh
 
--- SUPPLIER
+INSERT INTO BRANCH (BranchID, BranchName, BranchType, Address, Province, PhoneNumber, Email, Status) VALUES
+    ('82e5f6b4-ca50-503b-821b-c8a749407418', 'Chi nhánh Quận 1', 'retail_store', 'Mã chi nhánh: CN001', 'TP. Hồ Chí Minh', NULL, NULL, 'active'),
+    ('bb16bcff-6ed0-5f39-94f2-0a9f3116e2c7', 'Chi nhánh Quận 7', 'retail_store', 'Mã chi nhánh: CN007', 'TP. Hồ Chí Minh', NULL, NULL, 'active')
+ON CONFLICT (BranchID) DO UPDATE SET BranchName = EXCLUDED.BranchName, Address = EXCLUDED.Address, Status = EXCLUDED.Status;
+
+
+
+-- 4. Nhà cung cấp
+
 INSERT INTO SUPPLIER (SupplierID, SupplierName, TaxCode, PhoneNumber, Email, Address, PaymentTermDays, Status) VALUES
-('00000000-0000-0000-0000-000000000801', 'Công ty May Lụa Việt', '0310000001', '0900000001', 'contact@luaviet.local', 'TP.HCM', 15, 'active')
-ON CONFLICT (SupplierID) DO NOTHING;
+    ('b0cad886-cf6a-59a7-8711-a7b856c0e493', 'Routine Việt Nam', 'NCC001', NULL, NULL, 'Địa chỉ nhà cung cấp đang cập nhật', 0, 'active'),
+    ('d310558d-e9f7-5cda-8302-33917374581b', 'Routine Việt Nam', 'NCC002', NULL, NULL, 'Địa chỉ nhà cung cấp đang cập nhật', 0, 'active'),
+    ('4a02a2bd-bd5a-560d-9b3f-487dca950654', 'Routine Việt Nam', 'NCC003', NULL, NULL, 'Địa chỉ nhà cung cấp đang cập nhật', 0, 'active')
+ON CONFLICT (SupplierID) DO UPDATE SET SupplierName = EXCLUDED.SupplierName, TaxCode = EXCLUDED.TaxCode, Status = EXCLUDED.Status;
+
+
+
+-- 5. Sản phẩm gốc
+
+INSERT INTO PRODUCT (ProductID, CategoryID, ProductName, Slug, Brand, Gender, Description, DefaultSellingPrice, Tags, CollectionName, Status, DynamicAttributes) VALUES
+    ('a6ec9085-fec2-5f88-88eb-8f67c81a1d80', '037d9241-ef12-54a9-ba70-9c21d601efe6', 'Áo Thun Nam Tay Ngắn Cotton Cổ V Phối Viền In Chữ', 'ao-thun-nam-tay-ngan-cotton-co-v-phoi-vien-in-chu', 'Routine', 'male', 'Áo thun nam tay ngắn, cổ V, phối viền, in chữ trước ngực.', 479000.0, ARRAY['routine', 'áo thun nam', 'cotton', 'cổ v', 'white alyssum'], 'Summer 2025', 'active', '{"ma_san_pham": "SP_RT001", "chat_lieu": "Cotton Polyester", "don_vi_tinh": "Cái", "nguon_du_lieu": "excel_import"}'::JSONB),
+    ('21f660f3-2b92-549f-8cb7-73d573e56821', '0451c67b-6d95-5f71-9562-d1146570f651', 'Áo thun tay ngắn nữ S.cafe . Regular', 'ao-thun-tay-ngan-nu-scafe-regular', 'Routine', 'female', 'Áo thun nữ form regular', 499000.0, ARRAY['routine', 'áo thun nữ', 'café', 'snow white'], 'Coffee Lovers', 'active', '{"ma_san_pham": "SP_RT002", "chat_lieu": "Café", "don_vi_tinh": "Cái", "nguon_du_lieu": "excel_import"}'::JSONB),
+    ('027eb8c6-72f2-59be-975e-b3c791a7b270', 'd383ad89-8952-5636-9133-fee5b77101bd', 'Áo sơ mi Smartshirt cổ gài tay dài Oxford. Fitted', 'ao-so-mi-smartshirt-co-gai-tay-dai-oxford-fitted', 'Routine', 'male', 'Áo sơ mi nam oxford, dáng fitted', 479000.0, ARRAY['routine', 'áo sơ mi oxford', 'áo sơ mi tay dài', 'trơn'], 'Hero Products', 'active', '{"ma_san_pham": "SP_RT003", "chat_lieu": "Oxford", "don_vi_tinh": "Cái", "nguon_du_lieu": "excel_import"}'::JSONB),
+    ('e85e6eb0-07a5-57d5-add7-e81426cac50c', '5f711171-48e4-5a7a-ac77-076856431884', 'Quần Denim Dài Nam Dáng Ôm Form Regular', 'quan-denim-dai-nam-dang-om-form-regular', 'Routine', 'male', 'Quần denim nam form regular', 599000.0, ARRAY['routine', 'quần nam', 'quần demim', 'quần form regular'], 'Winter', 'active', '{"ma_san_pham": "SP_RT004", "chat_lieu": "Denim", "don_vi_tinh": "Cái", "nguon_du_lieu": "excel_import"}'::JSONB),
+    ('4ff71aea-75f8-54e1-92c4-3913ab1b0bd2', '4a96415c-1819-5f32-bf1e-960d8427b115', 'Chân Váy Nữ Dài Lai Tưa Linen Cotton Form A Line', 'chan-vay-nu-dai-lai-tua-linen-cotton-form-a-line', 'Routine', 'female', 'Chân váy dài form a line đuôi xòe nhẹ', 649000.0, ARRAY['routine', 'chân váy', 'chân váy linen cotton', 'chân váy form a-line', 'lai tưa'], 'Essential 25', 'active', '{"ma_san_pham": "SP_RT005", "chat_lieu": "Linen Cotton", "don_vi_tinh": "Cái", "nguon_du_lieu": "excel_import"}'::JSONB),
+    ('7de1508b-a834-5d00-a7bf-1122fbf05236', '4b30088c-952e-5223-a403-37947ad31cb8', 'Áo Blazer Nam Dệt Jacquard Đột Chỉ Form Fitted', 'ao-blazer-nam-det-jacquard-dot-chi-form-fitted', 'Routine', 'male', 'Áo Blazerform fitted', 1250000.0, ARRAY['routine', 'blazer dệt', 'blazer fitted'], 'Winter', 'active', '{"ma_san_pham": "SP_RT006", "chat_lieu": "Cotton", "don_vi_tinh": "Cái", "nguon_du_lieu": "excel_import"}'::JSONB),
+    ('a0b8e921-aa3c-5130-a726-34b827d10e30', 'c3fae192-f3f9-568c-aba3-b373c212ec1f', 'Quần Short Nam Túi Hộp Cargo Form Straight', 'quan-short-nam-tui-hop-cargo-form-straight', 'Routine', 'male', 'quần short form straight', 479000.0, ARRAY['routine', 'quần short', 'quần cotton', 'quần form straight fit'], 'Simplicity', 'active', '{"ma_san_pham": "SP_RT007", "chat_lieu": "Cotton", "don_vi_tinh": "Cái", "nguon_du_lieu": "excel_import"}'::JSONB),
+    ('f5c53c05-5d71-593c-a098-11d720745186', '0e053562-159e-5a31-8cbd-f53d45206399', 'Áo tanktop Slimme.Fitted', 'ao-tanktop-slimmefitted', 'Routine', 'female', 'áo thun nữ hai dây', 179000.0, ARRAY['routine', 'áo tanktop nữ'], 'Slimme', 'active', '{"ma_san_pham": "SP_RT008", "chat_lieu": "Poly Visco Spandex", "don_vi_tinh": "Cái", "nguon_du_lieu": "excel_import"}'::JSONB),
+    ('caa7d67b-31b8-5347-885e-cebf11003805', '247dbfe5-6cee-5f5f-b27f-40cc3874bc72', 'Áo Khoác Denim Nam Nhãn Vải ROUTINE Form Loose', 'ao-khoac-denim-nam-nhan-vai-routine-form-loose', 'Routine', 'male', 'áo khoác denim nam form loose', 799000.0, ARRAY['routine', 'áo khoác denim', 'áo khoác form loose'], 'Essential 25', 'active', '{"ma_san_pham": "SP_RT009", "chat_lieu": "Denim", "don_vi_tinh": "Cái", "nguon_du_lieu": "excel_import"}'::JSONB),
+    ('226c4605-4727-537d-b94f-74eedfed1b87', '23775f4a-3bf8-5eb4-9316-7c8c50ca223b', 'Áo dệt kim tay ngắn nữ cổ polo. Regular', 'ao-det-kim-tay-ngan-nu-co-polo-regular', 'Routine', 'female', 'áo len nữ form regular', 579000.0, ARRAY['routine', 'áo len ngắn tay', 'áo len cotton'], 'Sporty Chic', 'active', '{"ma_san_pham": "SP_RT010", "chat_lieu": "Cotton", "don_vi_tinh": "Cái", "nguon_du_lieu": "excel_import"}'::JSONB),
+    ('4b63ba89-176e-5aa4-a125-1d0bdeb64c1a', 'a38325a2-3f7d-5ebe-a23d-80525c6450ec', 'Đầm thun Slimme cổ V phối viền.Fitted', 'dam-thun-slimme-co-v-phoi-vienfitted', 'Routine', 'female', 'đầm nữ cổ polo phối viền', 649000.0, ARRAY['đầm nữ form regular', 'routine', 'đầm nữ tay ngắn'], 'Slimme', 'active', '{"ma_san_pham": "SP_RT011", "chat_lieu": "Poly Visco Spandex", "don_vi_tinh": "Cái", "nguon_du_lieu": "excel_import"}'::JSONB),
+    ('6c0bf7ca-d0ec-586c-9fc7-a6b7e06ea46a', '037d9241-ef12-54a9-ba70-9c21d601efe6', 'Áo thun tay ngắn nam Scafe thêu. Boxy', 'ao-thun-tay-ngan-nam-scafe-theu-boxy', 'Routine', 'male', 'áo thun nam form boxy', 849000.0, ARRAY['routine', 'áo thun nam boxy', 'áo thun nam café'], 'Coffee Lovers', 'active', '{"ma_san_pham": "SP_RT012", "chat_lieu": "Café", "don_vi_tinh": "Cái", "nguon_du_lieu": "excel_import"}'::JSONB),
+    ('3b4a5c69-3f5a-5146-b07a-fcf494fd20f7', 'e3398123-334f-55b5-ae75-2179d3e69a12', 'Quần nỉ jogger unisex gân phía trước', 'quan-ni-jogger-unisex-gan-phia-truoc', 'Routine', 'unisex', 'quần nỉ form jogger', 579000.0, ARRAY['routine', 'quần nỉ thể thao', 'quần mềm mại'], 'Couple', 'active', '{"ma_san_pham": "SP_RT013", "chat_lieu": "nỉ", "don_vi_tinh": "Cái", "nguon_du_lieu": "excel_import"}'::JSONB)
+ON CONFLICT (ProductID) DO UPDATE SET ProductName = EXCLUDED.ProductName, CategoryID = EXCLUDED.CategoryID, Slug = EXCLUDED.Slug, Brand = EXCLUDED.Brand, Gender = EXCLUDED.Gender, Description = EXCLUDED.Description, DefaultSellingPrice = EXCLUDED.DefaultSellingPrice, Tags = EXCLUDED.Tags, CollectionName = EXCLUDED.CollectionName, Status = EXCLUDED.Status, DynamicAttributes = EXCLUDED.DynamicAttributes, UpdatedAt = NOW();
+
+
+
+-- 6. Thuộc tính size/màu
+
+INSERT INTO ATTRIBUTE (AttributeID, AttributeType, Value, DisplayValue, HexCode, SortOrder, Status) VALUES
+    ('968e836b-ec33-5501-b319-20d0392d479f', 'size', 'XL', 'XL', NULL, 1, 'active'),
+    ('a1483e52-16ca-5e6c-a28f-cf7cb777905e', 'size', 'L', 'L', NULL, 2, 'active'),
+    ('600544ed-0916-5f57-80e1-e8048206f721', 'size', 'M', 'M', NULL, 3, 'active'),
+    ('190314a0-13ed-5d04-9cac-da59f6c45134', 'size', 'S', 'S', NULL, 4, 'active'),
+    ('af99d9c0-94fd-5366-a290-6ac070558a72', 'size', 'XXL', 'XXL', NULL, 5, 'active'),
+    ('8692a0a0-af2c-58c6-bf98-a2ba9ee56158', 'size', '30.0', '30.0', NULL, 6, 'active'),
+    ('ba51df99-daa4-5234-b2f5-4fa950f98a60', 'size', '31.0', '31.0', NULL, 7, 'active'),
+    ('305e9688-b23c-552e-b4cf-a1bbbb06a324', 'size', '32.0', '32.0', NULL, 8, 'active'),
+    ('0b4e0cc6-a84b-5276-8598-ad3a795f17c6', 'size', 'XS', 'XS', NULL, 9, 'active'),
+    ('a70f16c2-4574-5e4b-a9ff-6f59f8009556', 'size', '29.0', '29.0', NULL, 10, 'active'),
+    ('c150c517-ea8b-5c9a-b3f3-e212a86d3366', 'color', 'WHITE ALYSSUM', 'WHITE ALYSSUM', NULL, 1, 'active'),
+    ('9909b435-4eb5-537e-8d7d-a4d15b8993fa', 'color', 'NIGHT SKY', 'NIGHT SKY', NULL, 2, 'active'),
+    ('021ae1f7-f7c7-5596-bdcb-7158c18d5468', 'color', 'SNOW WHITE', 'SNOW WHITE', NULL, 3, 'active'),
+    ('bc23e4d2-c641-5252-b0b7-a7ff39cf5229', 'color', 'BLACK', 'BLACK', NULL, 4, 'active'),
+    ('489e7288-7c2f-5c85-b8a9-1a19758421c1', 'color', 'SHADOW GRAY', 'SHADOW GRAY', NULL, 5, 'active'),
+    ('243d36c4-31e2-5016-8797-dc55e9f11c06', 'color', 'MOONSTRUCK', 'MOONSTRUCK', NULL, 6, 'active'),
+    ('469c2a71-6c91-53e7-bb3b-38c4a542c3b5', 'color', 'BEIGE', 'BEIGE', NULL, 7, 'active'),
+    ('aaef15e0-f484-579a-8014-3fbe251f6bc1', 'color', 'OFF WHITE', 'OFF WHITE', NULL, 8, 'active'),
+    ('510963e7-e600-5eea-9856-d0aa27d91900', 'color', 'BROWN', 'BROWN', NULL, 9, 'active'),
+    ('01a1dca3-c15a-5ea4-afce-63eb15afc3d3', 'color', 'WIND CHIME', 'WIND CHIME', NULL, 10, 'active'),
+    ('9e3ad490-bfd4-5d21-8586-9159d06449de', 'color', 'GREY', 'GREY', NULL, 11, 'active'),
+    ('2650d0e5-7fbd-533a-af1b-9b7a068267c3', 'color', 'PINK', 'PINK', NULL, 12, 'active'),
+    ('e91ccc35-65b2-5b4e-9136-933b9c69f7f7', 'color', 'DARK SAPPHIRE', 'DARK SAPPHIRE', NULL, 13, 'active'),
+    ('f004b5ab-b545-5f12-a644-986a1dcdb223', 'color', 'CELADON GREEN', 'CELADON GREEN', NULL, 14, 'active'),
+    ('2dbc4039-44f1-5cac-8eb6-ccee60725eb3', 'color', 'M/INDIGO', 'M/INDIGO', NULL, 15, 'active'),
+    ('3148f7a7-350a-5486-ba7a-4e2fbb131497', 'color', 'RED', 'RED', NULL, 16, 'active'),
+    ('46743193-8a0f-5041-a091-39e37e46c975', 'color', 'GRAY MELANGE', 'GRAY MELANGE', NULL, 17, 'active'),
+    ('e2b085ef-9907-5538-98ff-22ad4e720e83', 'color', 'BLACK/BLACK', 'BLACK/BLACK', NULL, 18, 'active'),
+    ('11f2f10d-f669-5178-b7a1-ed4ea250021e', 'color', 'WHITE/WHITE', 'WHITE/WHITE', NULL, 19, 'active'),
+    ('33c96f14-493a-5a93-9c40-9776f12f4361', 'color', 'BLACK/RED', 'BLACK/RED', NULL, 20, 'active'),
+    ('b6525e25-d5ab-5ba7-af3e-52d090c29cdb', 'color', 'WHITE/RED', 'WHITE/RED', NULL, 21, 'active'),
+    ('61ffa93d-61d6-5e79-b733-b001188813b5', 'color', 'CAPPUCCINO', 'CAPPUCCINO', NULL, 22, 'active')
+ON CONFLICT (AttributeID) DO UPDATE SET AttributeType = EXCLUDED.AttributeType, Value = EXCLUDED.Value, DisplayValue = EXCLUDED.DisplayValue, HexCode = EXCLUDED.HexCode, SortOrder = EXCLUDED.SortOrder, Status = EXCLUDED.Status;
+
+
+
+-- 7. Biến thể sản phẩm/SKU
+
+INSERT INTO PRODUCT_VARIANT (VariantID, ProductID, SizeAttributeID, ColorAttributeID, SKU, Barcode, CostPrice, SellingPrice, Weight, Status) VALUES
+    ('66fb4116-aa2e-5b46-8821-b651835fd5de', 'a6ec9085-fec2-5f88-88eb-8f67c81a1d80', '968e836b-ec33-5501-b319-20d0392d479f', 'c150c517-ea8b-5c9a-b3f3-e212a86d3366', '10S25TSS026_007', NULL, 249000.0, 479000.0, NULL, 'active'),
+    ('dd2fcc3f-5962-5f64-be70-23db4e30e00c', 'a6ec9085-fec2-5f88-88eb-8f67c81a1d80', 'a1483e52-16ca-5e6c-a28f-cf7cb777905e', 'c150c517-ea8b-5c9a-b3f3-e212a86d3366', '10S25TSS026_006', NULL, 249000.0, 479000.0, NULL, 'active'),
+    ('1ae64a6d-0194-5030-95d3-8a50c9211953', 'a6ec9085-fec2-5f88-88eb-8f67c81a1d80', 'a1483e52-16ca-5e6c-a28f-cf7cb777905e', '9909b435-4eb5-537e-8d7d-a4d15b8993fa', '10S25TSS026_002', NULL, 249000.0, 479000.0, NULL, 'active'),
+    ('25ce8630-4638-5010-8dba-1ef1747822e5', 'a6ec9085-fec2-5f88-88eb-8f67c81a1d80', '600544ed-0916-5f57-80e1-e8048206f721', '9909b435-4eb5-537e-8d7d-a4d15b8993fa', '10S25TSS026_001', NULL, 249000.0, 479000.0, NULL, 'active'),
+    ('47953b57-5311-5682-a202-cf128d6ff8bb', '21f660f3-2b92-549f-8cb7-73d573e56821', '600544ed-0916-5f57-80e1-e8048206f721', '021ae1f7-f7c7-5596-bdcb-7158c18d5468', '10S26TSSW046_005', NULL, 259000.0, 499000.0, NULL, 'active'),
+    ('319146fc-4bd3-54f0-a82f-310fadde1369', '21f660f3-2b92-549f-8cb7-73d573e56821', '968e836b-ec33-5501-b319-20d0392d479f', '021ae1f7-f7c7-5596-bdcb-7158c18d5468', '10S26TSSW046_007', NULL, 259000.0, 499000.0, NULL, 'active'),
+    ('77c0943b-b938-51f7-b8ec-01a7a6dccfe8', '21f660f3-2b92-549f-8cb7-73d573e56821', '190314a0-13ed-5d04-9cac-da59f6c45134', 'bc23e4d2-c641-5252-b0b7-a7ff39cf5229', '10S26TSSW046_000', NULL, 259000.0, 499000.0, NULL, 'active'),
+    ('7ac2cc8d-86f2-5fba-aa0d-c6d46f70efae', '21f660f3-2b92-549f-8cb7-73d573e56821', '968e836b-ec33-5501-b319-20d0392d479f', 'bc23e4d2-c641-5252-b0b7-a7ff39cf5229', '10S26TSSW046_002', NULL, 259000.0, 499000.0, NULL, 'active'),
+    ('2efe467a-59e9-5d86-942a-778dd09a7ef3', '027eb8c6-72f2-59be-975e-b3c791a7b270', '968e836b-ec33-5501-b319-20d0392d479f', '489e7288-7c2f-5c85-b8a9-1a19758421c1', '10S25SHL005_033', NULL, 249000.0, 479000.0, NULL, 'active'),
+    ('46cabb7b-ed52-5385-9fb4-c5500a9bc30e', '027eb8c6-72f2-59be-975e-b3c791a7b270', '600544ed-0916-5f57-80e1-e8048206f721', '489e7288-7c2f-5c85-b8a9-1a19758421c1', '10S25SHL005_031', NULL, 249000.0, 479000.0, NULL, 'active'),
+    ('3c395bcb-ff58-5fb9-a82f-6f85ad4415f9', '027eb8c6-72f2-59be-975e-b3c791a7b270', 'af99d9c0-94fd-5366-a290-6ac070558a72', '489e7288-7c2f-5c85-b8a9-1a19758421c1', '10S25SHL005_034', NULL, 249000.0, 479000.0, NULL, 'active'),
+    ('c0545b67-041c-5e19-8558-587ab938bc36', '027eb8c6-72f2-59be-975e-b3c791a7b270', 'a1483e52-16ca-5e6c-a28f-cf7cb777905e', '489e7288-7c2f-5c85-b8a9-1a19758421c1', '10S25SHL005_032', NULL, 249000.0, 479000.0, NULL, 'active'),
+    ('323f117a-8ea6-5d8b-9b38-67f0d5945aa4', 'e85e6eb0-07a5-57d5-add7-e81426cac50c', '8692a0a0-af2c-58c6-bf98-a2ba9ee56158', '243d36c4-31e2-5016-8797-dc55e9f11c06', '10F25DPA025_005', NULL, 311000.0, 599000.0, NULL, 'active'),
+    ('cdc12fd4-b4fe-55b4-969d-7a54fa746301', 'e85e6eb0-07a5-57d5-add7-e81426cac50c', 'ba51df99-daa4-5234-b2f5-4fa950f98a60', '243d36c4-31e2-5016-8797-dc55e9f11c06', '10F25DPA025_006', NULL, 311000.0, 599000.0, NULL, 'active'),
+    ('6643155c-0f91-525b-8b6f-3fcb687e937c', 'e85e6eb0-07a5-57d5-add7-e81426cac50c', '305e9688-b23c-552e-b4cf-a1bbbb06a324', '243d36c4-31e2-5016-8797-dc55e9f11c06', '10F25DPA025_007', NULL, 311000.0, 599000.0, NULL, 'active'),
+    ('3c967e91-c3fb-5762-9fe1-ef25f167f060', 'e85e6eb0-07a5-57d5-add7-e81426cac50c', '8692a0a0-af2c-58c6-bf98-a2ba9ee56158', '469c2a71-6c91-53e7-bb3b-38c4a542c3b5', '10F25DPA025_001', NULL, 311000.0, 599000.0, NULL, 'active'),
+    ('677a14ba-62df-52f1-a395-07d35f2a537f', '4ff71aea-75f8-54e1-92c4-3913ab1b0bd2', '0b4e0cc6-a84b-5276-8598-ad3a795f17c6', 'aaef15e0-f484-579a-8014-3fbe251f6bc1', '10F25SKIW020_004', NULL, 337000.0, 649000.0, NULL, 'active'),
+    ('a98a0ae4-f04b-599c-a8a8-f684956a8fd7', '4ff71aea-75f8-54e1-92c4-3913ab1b0bd2', '190314a0-13ed-5d04-9cac-da59f6c45134', 'aaef15e0-f484-579a-8014-3fbe251f6bc1', '10F25SKIW020_005', NULL, 337000.0, 649000.0, NULL, 'active'),
+    ('cc0bd79f-b0a7-5707-b09b-cf81d3e4dca3', '4ff71aea-75f8-54e1-92c4-3913ab1b0bd2', '190314a0-13ed-5d04-9cac-da59f6c45134', '510963e7-e600-5eea-9856-d0aa27d91900', '10F25SKIW020_001', NULL, 337000.0, 649000.0, NULL, 'active'),
+    ('fa27dc79-3374-5f58-974a-bb02998d42a8', '4ff71aea-75f8-54e1-92c4-3913ab1b0bd2', 'a1483e52-16ca-5e6c-a28f-cf7cb777905e', '510963e7-e600-5eea-9856-d0aa27d91900', '10F25SKIW020_003', NULL, 337000.0, 649000.0, NULL, 'active'),
+    ('1d9499a5-c2f9-50f8-bec4-4c1e79bf3d1b', '7de1508b-a834-5d00-a7bf-1122fbf05236', '190314a0-13ed-5d04-9cac-da59f6c45134', 'bc23e4d2-c641-5252-b0b7-a7ff39cf5229', '10F24VES010_000', NULL, 650000.0, 1250000.0, NULL, 'active'),
+    ('6c0c1ed8-6f18-5115-b078-8fe5a60d16ab', '7de1508b-a834-5d00-a7bf-1122fbf05236', 'a1483e52-16ca-5e6c-a28f-cf7cb777905e', '01a1dca3-c15a-5ea4-afce-63eb15afc3d3', '10F24VES010_017', NULL, 650000.0, 1250000.0, NULL, 'active'),
+    ('08517b28-ad84-51ac-87e1-eddb3b3ebe77', '7de1508b-a834-5d00-a7bf-1122fbf05236', '190314a0-13ed-5d04-9cac-da59f6c45134', '9e3ad490-bfd4-5d21-8586-9159d06449de', '10F24VES010_005', NULL, 650000.0, 1250000.0, NULL, 'active'),
+    ('3ac92503-b0d7-562b-8aaa-709a7da9087c', '7de1508b-a834-5d00-a7bf-1122fbf05236', '968e836b-ec33-5501-b319-20d0392d479f', '9e3ad490-bfd4-5d21-8586-9159d06449de', '10F24VES010_008', NULL, 650000.0, 1250000.0, NULL, 'active'),
+    ('29a45a4d-bd6d-5bac-9341-ecc1a02f8f7a', 'a0b8e921-aa3c-5130-a726-34b827d10e30', 'a70f16c2-4574-5e4b-a9ff-6f59f8009556', 'bc23e4d2-c641-5252-b0b7-a7ff39cf5229', '10S26PSH008_000', NULL, 249000.0, 479000.0, NULL, 'active'),
+    ('e81e0dad-a748-5597-84fa-83212b3b104e', 'a0b8e921-aa3c-5130-a726-34b827d10e30', '305e9688-b23c-552e-b4cf-a1bbbb06a324', 'bc23e4d2-c641-5252-b0b7-a7ff39cf5229', '10S26PSH008_003', NULL, 249000.0, 479000.0, NULL, 'active'),
+    ('dfa677da-4a88-5576-8e7f-628198cc474d', 'a0b8e921-aa3c-5130-a726-34b827d10e30', '305e9688-b23c-552e-b4cf-a1bbbb06a324', '510963e7-e600-5eea-9856-d0aa27d91900', '10S26PSH008_008', NULL, 249000.0, 479000.0, NULL, 'active'),
+    ('e5f9f658-7282-56f7-8f2e-dc823fbb9adc', 'a0b8e921-aa3c-5130-a726-34b827d10e30', '8692a0a0-af2c-58c6-bf98-a2ba9ee56158', '510963e7-e600-5eea-9856-d0aa27d91900', '10S26PSH008_006', NULL, 249000.0, 479000.0, NULL, 'active'),
+    ('e9dc41d7-3625-5772-a5e5-3da4bbbe4a3c', 'f5c53c05-5d71-593c-a098-11d720745186', '600544ed-0916-5f57-80e1-e8048206f721', '510963e7-e600-5eea-9856-d0aa27d91900', '10S25TTOW001_006', NULL, 93000.0, 179000.0, NULL, 'active'),
+    ('8d6ee57f-6793-58b5-9c26-39c6839a032d', 'f5c53c05-5d71-593c-a098-11d720745186', '600544ed-0916-5f57-80e1-e8048206f721', '2650d0e5-7fbd-533a-af1b-9b7a068267c3', '10S25TTOW001_026', NULL, 93000.0, 179000.0, NULL, 'active'),
+    ('93793ab2-caf9-5053-8356-3c41f4bccb22', 'f5c53c05-5d71-593c-a098-11d720745186', '600544ed-0916-5f57-80e1-e8048206f721', 'e91ccc35-65b2-5b4e-9136-933b9c69f7f7', '10S25TTOW001_002', NULL, 93000.0, 179000.0, NULL, 'active'),
+    ('fe054901-6486-54ce-89b5-4e90cd4daf25', 'f5c53c05-5d71-593c-a098-11d720745186', '600544ed-0916-5f57-80e1-e8048206f721', 'f004b5ab-b545-5f12-a644-986a1dcdb223', '10S25TTOW001_010', NULL, 93000.0, 179000.0, NULL, 'active'),
+    ('4d6e66c1-5243-5ff6-a452-2a55d6756675', 'caa7d67b-31b8-5347-885e-cebf11003805', '190314a0-13ed-5d04-9cac-da59f6c45134', '2dbc4039-44f1-5cac-8eb6-ccee60725eb3', '10F25DJA007_000', NULL, 415000.0, 799000.0, NULL, 'active'),
+    ('567d78a5-d37c-57e4-ad11-ce37183a4508', 'caa7d67b-31b8-5347-885e-cebf11003805', '600544ed-0916-5f57-80e1-e8048206f721', '2dbc4039-44f1-5cac-8eb6-ccee60725eb3', '10F25DJA007_001', NULL, 415000.0, 799000.0, NULL, 'active'),
+    ('7961677a-2db1-5cf9-a777-c12fec5a0846', 'caa7d67b-31b8-5347-885e-cebf11003805', 'a1483e52-16ca-5e6c-a28f-cf7cb777905e', '2dbc4039-44f1-5cac-8eb6-ccee60725eb3', '10F25DJA007_002', NULL, 415000.0, 799000.0, NULL, 'active'),
+    ('e6a48fd8-ba0b-5822-a4b9-e364a11350d2', 'caa7d67b-31b8-5347-885e-cebf11003805', '968e836b-ec33-5501-b319-20d0392d479f', '2dbc4039-44f1-5cac-8eb6-ccee60725eb3', '10F25DJA007_003', NULL, 415000.0, 799000.0, NULL, 'active'),
+    ('ccc54f76-17b4-5e7d-88e5-8b2638278a0c', '226c4605-4727-537d-b94f-74eedfed1b87', '968e836b-ec33-5501-b319-20d0392d479f', '3148f7a7-350a-5486-ba7a-4e2fbb131497', '10S26KNIW016_011', NULL, 301000.0, 579000.0, NULL, 'active'),
+    ('d5f328c8-bff2-555f-8e97-0b89b5088ea0', '226c4605-4727-537d-b94f-74eedfed1b87', '968e836b-ec33-5501-b319-20d0392d479f', '2650d0e5-7fbd-533a-af1b-9b7a068267c3', '10S26KNIW016_007', NULL, 301000.0, 579000.0, NULL, 'active'),
+    ('4aa67b9c-d40a-5555-b176-50909617a5ee', '226c4605-4727-537d-b94f-74eedfed1b87', 'a1483e52-16ca-5e6c-a28f-cf7cb777905e', 'aaef15e0-f484-579a-8014-3fbe251f6bc1', '10S26KNIW016_002', NULL, 301000.0, 579000.0, NULL, 'active'),
+    ('6d195bd5-a790-5e27-b806-3876bbdef442', '226c4605-4727-537d-b94f-74eedfed1b87', '190314a0-13ed-5d04-9cac-da59f6c45134', '3148f7a7-350a-5486-ba7a-4e2fbb131497', '10S26KNIW016_008', NULL, 301000.0, 579000.0, NULL, 'active'),
+    ('e9d73401-d6ef-564d-a08f-d1b23138f241', '4b63ba89-176e-5aa4-a125-1d0bdeb64c1a', '0b4e0cc6-a84b-5276-8598-ad3a795f17c6', 'bc23e4d2-c641-5252-b0b7-a7ff39cf5229', '10F25DREW003_000', NULL, 337000.0, 649000.0, NULL, 'active'),
+    ('2ce11265-d9e0-5d32-b2b5-ff52cb2acf9f', '4b63ba89-176e-5aa4-a125-1d0bdeb64c1a', '190314a0-13ed-5d04-9cac-da59f6c45134', 'bc23e4d2-c641-5252-b0b7-a7ff39cf5229', '10F25DREW003_001', NULL, 337000.0, 649000.0, NULL, 'active'),
+    ('7dc84db0-7b0c-55d6-a61c-41699d2e20e4', '4b63ba89-176e-5aa4-a125-1d0bdeb64c1a', '190314a0-13ed-5d04-9cac-da59f6c45134', '46743193-8a0f-5041-a091-39e37e46c975', '10F25DREW003_005', NULL, 337000.0, 649000.0, NULL, 'active'),
+    ('e88a359d-1441-57f9-bc05-a6828b45d138', '4b63ba89-176e-5aa4-a125-1d0bdeb64c1a', '600544ed-0916-5f57-80e1-e8048206f721', '46743193-8a0f-5041-a091-39e37e46c975', '10F25DREW003_006', NULL, 337000.0, 649000.0, NULL, 'active'),
+    ('b87675c7-332e-5523-b30b-85b2b8dba49c', '6c0bf7ca-d0ec-586c-9fc7-a6b7e06ea46a', 'a1483e52-16ca-5e6c-a28f-cf7cb777905e', 'e2b085ef-9907-5538-98ff-22ad4e720e83', '10S26TSS042_009', NULL, 441000.0, 849000.0, NULL, 'active'),
+    ('e4dfede1-0c37-5676-a81f-c27d17a55aa6', '6c0bf7ca-d0ec-586c-9fc7-a6b7e06ea46a', '600544ed-0916-5f57-80e1-e8048206f721', '11f2f10d-f669-5178-b7a1-ed4ea250021e', '10S26TSS042_021', NULL, 441000.0, 849000.0, NULL, 'active'),
+    ('1c4fe18f-6b9b-5f8d-8999-cec34ecb9634', '6c0bf7ca-d0ec-586c-9fc7-a6b7e06ea46a', '600544ed-0916-5f57-80e1-e8048206f721', '33c96f14-493a-5a93-9c40-9776f12f4361', '10S26TSS042_013', NULL, 441000.0, 849000.0, NULL, 'active'),
+    ('f5f40e2f-ea3d-5c1e-ad6a-0e0477d106dd', '6c0bf7ca-d0ec-586c-9fc7-a6b7e06ea46a', '600544ed-0916-5f57-80e1-e8048206f721', 'b6525e25-d5ab-5ba7-af3e-52d090c29cdb', '10S26TSS042_017', NULL, 441000.0, 849000.0, NULL, 'active'),
+    ('ab0218c8-c6c9-567a-88c8-dc23b01d25c2', '3b4a5c69-3f5a-5146-b07a-fcf494fd20f7', 'a1483e52-16ca-5e6c-a28f-cf7cb777905e', '61ffa93d-61d6-5e79-b733-b001188813b5', '10F23PKNU001_010', NULL, 301000.0, 579000.0, NULL, 'active'),
+    ('da7e4f0e-d2fe-5687-b333-f5dc1c2bf853', '3b4a5c69-3f5a-5146-b07a-fcf494fd20f7', '968e836b-ec33-5501-b319-20d0392d479f', '61ffa93d-61d6-5e79-b733-b001188813b5', '10F23PKNU001_011', NULL, 301000.0, 579000.0, NULL, 'active')
+ON CONFLICT (VariantID) DO UPDATE SET ProductID = EXCLUDED.ProductID, SizeAttributeID = EXCLUDED.SizeAttributeID, ColorAttributeID = EXCLUDED.ColorAttributeID, SKU = EXCLUDED.SKU, Barcode = EXCLUDED.Barcode, CostPrice = EXCLUDED.CostPrice, SellingPrice = EXCLUDED.SellingPrice, Status = EXCLUDED.Status;
+
+
+
+-- 8. Kênh bán hàng
+
+INSERT INTO SALES_CHANNEL (ChannelID, ChannelName, ChannelType, Status, ChannelConfig) VALUES
+    ('0c607b84-3f5e-5dc8-b185-9427ce5a65ac', 'POS', 'pos', 'active', '{"source": "seed_sample_data"}'::JSONB),
+    ('3c1cd3e6-f32d-51bc-8296-d4ac1b30e9de', 'Website', 'website', 'active', '{"source": "seed_sample_data"}'::JSONB),
+    ('4b35c95e-2c78-5d95-ba54-4abb85e9b4a7', 'Shopee', 'shopee', 'active', '{"source": "seed_sample_data"}'::JSONB),
+    ('0a9333a3-6a59-5961-aec6-ba705956afeb', 'TikTok', 'tiktok', 'active', '{"source": "seed_sample_data"}'::JSONB)
+ON CONFLICT (ChannelID) DO UPDATE SET ChannelName = EXCLUDED.ChannelName, ChannelType = EXCLUDED.ChannelType, Status = EXCLUDED.Status, ChannelConfig = EXCLUDED.ChannelConfig;
+
+
+
+-- 9. Giá bán theo kênh
+
+INSERT INTO CHANNEL_PRICE (ChannelID, VariantID, ExternalProductID, SellingPrice) VALUES
+    ('0c607b84-3f5e-5dc8-b185-9427ce5a65ac', '66fb4116-aa2e-5b46-8821-b651835fd5de', NULL, 479000.0),
+    ('3c1cd3e6-f32d-51bc-8296-d4ac1b30e9de', '66fb4116-aa2e-5b46-8821-b651835fd5de', NULL, 479000.0),
+    ('4b35c95e-2c78-5d95-ba54-4abb85e9b4a7', '66fb4116-aa2e-5b46-8821-b651835fd5de', NULL, 459000.0),
+    ('0a9333a3-6a59-5961-aec6-ba705956afeb', '66fb4116-aa2e-5b46-8821-b651835fd5de', NULL, 449000.0),
+    ('0c607b84-3f5e-5dc8-b185-9427ce5a65ac', 'dd2fcc3f-5962-5f64-be70-23db4e30e00c', NULL, 479000.0),
+    ('3c1cd3e6-f32d-51bc-8296-d4ac1b30e9de', 'dd2fcc3f-5962-5f64-be70-23db4e30e00c', NULL, 479000.0),
+    ('4b35c95e-2c78-5d95-ba54-4abb85e9b4a7', 'dd2fcc3f-5962-5f64-be70-23db4e30e00c', NULL, 455000.0),
+    ('0a9333a3-6a59-5961-aec6-ba705956afeb', 'dd2fcc3f-5962-5f64-be70-23db4e30e00c', NULL, 445000.0),
+    ('0c607b84-3f5e-5dc8-b185-9427ce5a65ac', '1ae64a6d-0194-5030-95d3-8a50c9211953', NULL, 479000.0),
+    ('3c1cd3e6-f32d-51bc-8296-d4ac1b30e9de', '1ae64a6d-0194-5030-95d3-8a50c9211953', NULL, 479000.0),
+    ('4b35c95e-2c78-5d95-ba54-4abb85e9b4a7', '1ae64a6d-0194-5030-95d3-8a50c9211953', NULL, 455000.0),
+    ('0a9333a3-6a59-5961-aec6-ba705956afeb', '1ae64a6d-0194-5030-95d3-8a50c9211953', NULL, 445000.0),
+    ('0c607b84-3f5e-5dc8-b185-9427ce5a65ac', '25ce8630-4638-5010-8dba-1ef1747822e5', NULL, 479000.0),
+    ('3c1cd3e6-f32d-51bc-8296-d4ac1b30e9de', '25ce8630-4638-5010-8dba-1ef1747822e5', NULL, 479000.0),
+    ('4b35c95e-2c78-5d95-ba54-4abb85e9b4a7', '25ce8630-4638-5010-8dba-1ef1747822e5', NULL, 455000.0),
+    ('0a9333a3-6a59-5961-aec6-ba705956afeb', '25ce8630-4638-5010-8dba-1ef1747822e5', NULL, 445000.0),
+    ('0c607b84-3f5e-5dc8-b185-9427ce5a65ac', '47953b57-5311-5682-a202-cf128d6ff8bb', NULL, 499000.0),
+    ('3c1cd3e6-f32d-51bc-8296-d4ac1b30e9de', '47953b57-5311-5682-a202-cf128d6ff8bb', NULL, 499000.0),
+    ('4b35c95e-2c78-5d95-ba54-4abb85e9b4a7', '47953b57-5311-5682-a202-cf128d6ff8bb', NULL, 474000.0),
+    ('0a9333a3-6a59-5961-aec6-ba705956afeb', '47953b57-5311-5682-a202-cf128d6ff8bb', NULL, 464000.0),
+    ('0c607b84-3f5e-5dc8-b185-9427ce5a65ac', '319146fc-4bd3-54f0-a82f-310fadde1369', NULL, 499000.0),
+    ('3c1cd3e6-f32d-51bc-8296-d4ac1b30e9de', '319146fc-4bd3-54f0-a82f-310fadde1369', NULL, 499000.0),
+    ('4b35c95e-2c78-5d95-ba54-4abb85e9b4a7', '319146fc-4bd3-54f0-a82f-310fadde1369', NULL, 474000.0),
+    ('0a9333a3-6a59-5961-aec6-ba705956afeb', '319146fc-4bd3-54f0-a82f-310fadde1369', NULL, 464000.0),
+    ('0c607b84-3f5e-5dc8-b185-9427ce5a65ac', '77c0943b-b938-51f7-b8ec-01a7a6dccfe8', NULL, 499000.0),
+    ('3c1cd3e6-f32d-51bc-8296-d4ac1b30e9de', '77c0943b-b938-51f7-b8ec-01a7a6dccfe8', NULL, 499000.0),
+    ('4b35c95e-2c78-5d95-ba54-4abb85e9b4a7', '77c0943b-b938-51f7-b8ec-01a7a6dccfe8', NULL, 474000.0),
+    ('0a9333a3-6a59-5961-aec6-ba705956afeb', '77c0943b-b938-51f7-b8ec-01a7a6dccfe8', NULL, 464000.0),
+    ('0c607b84-3f5e-5dc8-b185-9427ce5a65ac', '7ac2cc8d-86f2-5fba-aa0d-c6d46f70efae', NULL, 499000.0),
+    ('3c1cd3e6-f32d-51bc-8296-d4ac1b30e9de', '7ac2cc8d-86f2-5fba-aa0d-c6d46f70efae', NULL, 499000.0),
+    ('4b35c95e-2c78-5d95-ba54-4abb85e9b4a7', '7ac2cc8d-86f2-5fba-aa0d-c6d46f70efae', NULL, 474000.0),
+    ('0a9333a3-6a59-5961-aec6-ba705956afeb', '7ac2cc8d-86f2-5fba-aa0d-c6d46f70efae', NULL, 464000.0),
+    ('0c607b84-3f5e-5dc8-b185-9427ce5a65ac', '2efe467a-59e9-5d86-942a-778dd09a7ef3', NULL, 479000.0),
+    ('3c1cd3e6-f32d-51bc-8296-d4ac1b30e9de', '2efe467a-59e9-5d86-942a-778dd09a7ef3', NULL, 479000.0),
+    ('4b35c95e-2c78-5d95-ba54-4abb85e9b4a7', '2efe467a-59e9-5d86-942a-778dd09a7ef3', NULL, 455000.0),
+    ('0a9333a3-6a59-5961-aec6-ba705956afeb', '2efe467a-59e9-5d86-942a-778dd09a7ef3', NULL, 445000.0),
+    ('0c607b84-3f5e-5dc8-b185-9427ce5a65ac', '46cabb7b-ed52-5385-9fb4-c5500a9bc30e', NULL, 479000.0),
+    ('3c1cd3e6-f32d-51bc-8296-d4ac1b30e9de', '46cabb7b-ed52-5385-9fb4-c5500a9bc30e', NULL, 479000.0),
+    ('4b35c95e-2c78-5d95-ba54-4abb85e9b4a7', '46cabb7b-ed52-5385-9fb4-c5500a9bc30e', NULL, 455000.0),
+    ('0a9333a3-6a59-5961-aec6-ba705956afeb', '46cabb7b-ed52-5385-9fb4-c5500a9bc30e', NULL, 445000.0),
+    ('0c607b84-3f5e-5dc8-b185-9427ce5a65ac', '3c395bcb-ff58-5fb9-a82f-6f85ad4415f9', NULL, 479000.0),
+    ('3c1cd3e6-f32d-51bc-8296-d4ac1b30e9de', '3c395bcb-ff58-5fb9-a82f-6f85ad4415f9', NULL, 479000.0),
+    ('4b35c95e-2c78-5d95-ba54-4abb85e9b4a7', '3c395bcb-ff58-5fb9-a82f-6f85ad4415f9', NULL, 455000.0),
+    ('0a9333a3-6a59-5961-aec6-ba705956afeb', '3c395bcb-ff58-5fb9-a82f-6f85ad4415f9', NULL, 445000.0),
+    ('0c607b84-3f5e-5dc8-b185-9427ce5a65ac', 'c0545b67-041c-5e19-8558-587ab938bc36', NULL, 479000.0),
+    ('3c1cd3e6-f32d-51bc-8296-d4ac1b30e9de', 'c0545b67-041c-5e19-8558-587ab938bc36', NULL, 479000.0),
+    ('4b35c95e-2c78-5d95-ba54-4abb85e9b4a7', 'c0545b67-041c-5e19-8558-587ab938bc36', NULL, 455000.0),
+    ('0a9333a3-6a59-5961-aec6-ba705956afeb', 'c0545b67-041c-5e19-8558-587ab938bc36', NULL, 445000.0),
+    ('0c607b84-3f5e-5dc8-b185-9427ce5a65ac', '323f117a-8ea6-5d8b-9b38-67f0d5945aa4', NULL, 599000.0),
+    ('3c1cd3e6-f32d-51bc-8296-d4ac1b30e9de', '323f117a-8ea6-5d8b-9b38-67f0d5945aa4', NULL, 599000.0),
+    ('4b35c95e-2c78-5d95-ba54-4abb85e9b4a7', '323f117a-8ea6-5d8b-9b38-67f0d5945aa4', NULL, 569000.0),
+    ('0a9333a3-6a59-5961-aec6-ba705956afeb', '323f117a-8ea6-5d8b-9b38-67f0d5945aa4', NULL, 557000.0),
+    ('0c607b84-3f5e-5dc8-b185-9427ce5a65ac', 'cdc12fd4-b4fe-55b4-969d-7a54fa746301', NULL, 599000.0),
+    ('3c1cd3e6-f32d-51bc-8296-d4ac1b30e9de', 'cdc12fd4-b4fe-55b4-969d-7a54fa746301', NULL, 599000.0),
+    ('4b35c95e-2c78-5d95-ba54-4abb85e9b4a7', 'cdc12fd4-b4fe-55b4-969d-7a54fa746301', NULL, 569000.0),
+    ('0a9333a3-6a59-5961-aec6-ba705956afeb', 'cdc12fd4-b4fe-55b4-969d-7a54fa746301', NULL, 557000.0),
+    ('0c607b84-3f5e-5dc8-b185-9427ce5a65ac', '6643155c-0f91-525b-8b6f-3fcb687e937c', NULL, 599000.0),
+    ('3c1cd3e6-f32d-51bc-8296-d4ac1b30e9de', '6643155c-0f91-525b-8b6f-3fcb687e937c', NULL, 599000.0),
+    ('4b35c95e-2c78-5d95-ba54-4abb85e9b4a7', '6643155c-0f91-525b-8b6f-3fcb687e937c', NULL, 569000.0),
+    ('0a9333a3-6a59-5961-aec6-ba705956afeb', '6643155c-0f91-525b-8b6f-3fcb687e937c', NULL, 557000.0),
+    ('0c607b84-3f5e-5dc8-b185-9427ce5a65ac', '3c967e91-c3fb-5762-9fe1-ef25f167f060', NULL, 599000.0),
+    ('3c1cd3e6-f32d-51bc-8296-d4ac1b30e9de', '3c967e91-c3fb-5762-9fe1-ef25f167f060', NULL, 599000.0),
+    ('4b35c95e-2c78-5d95-ba54-4abb85e9b4a7', '3c967e91-c3fb-5762-9fe1-ef25f167f060', NULL, 569000.0),
+    ('0a9333a3-6a59-5961-aec6-ba705956afeb', '3c967e91-c3fb-5762-9fe1-ef25f167f060', NULL, 557000.0),
+    ('0c607b84-3f5e-5dc8-b185-9427ce5a65ac', '677a14ba-62df-52f1-a395-07d35f2a537f', NULL, 649000.0),
+    ('3c1cd3e6-f32d-51bc-8296-d4ac1b30e9de', '677a14ba-62df-52f1-a395-07d35f2a537f', NULL, 649000.0),
+    ('4b35c95e-2c78-5d95-ba54-4abb85e9b4a7', '677a14ba-62df-52f1-a395-07d35f2a537f', NULL, 617000.0),
+    ('0a9333a3-6a59-5961-aec6-ba705956afeb', '677a14ba-62df-52f1-a395-07d35f2a537f', NULL, 604000.0),
+    ('0c607b84-3f5e-5dc8-b185-9427ce5a65ac', 'a98a0ae4-f04b-599c-a8a8-f684956a8fd7', NULL, 649000.0),
+    ('3c1cd3e6-f32d-51bc-8296-d4ac1b30e9de', 'a98a0ae4-f04b-599c-a8a8-f684956a8fd7', NULL, 649000.0),
+    ('4b35c95e-2c78-5d95-ba54-4abb85e9b4a7', 'a98a0ae4-f04b-599c-a8a8-f684956a8fd7', NULL, 617000.0),
+    ('0a9333a3-6a59-5961-aec6-ba705956afeb', 'a98a0ae4-f04b-599c-a8a8-f684956a8fd7', NULL, 604000.0),
+    ('0c607b84-3f5e-5dc8-b185-9427ce5a65ac', 'cc0bd79f-b0a7-5707-b09b-cf81d3e4dca3', NULL, 649000.0),
+    ('3c1cd3e6-f32d-51bc-8296-d4ac1b30e9de', 'cc0bd79f-b0a7-5707-b09b-cf81d3e4dca3', NULL, 649000.0),
+    ('4b35c95e-2c78-5d95-ba54-4abb85e9b4a7', 'cc0bd79f-b0a7-5707-b09b-cf81d3e4dca3', NULL, 617000.0),
+    ('0a9333a3-6a59-5961-aec6-ba705956afeb', 'cc0bd79f-b0a7-5707-b09b-cf81d3e4dca3', NULL, 604000.0),
+    ('0c607b84-3f5e-5dc8-b185-9427ce5a65ac', 'fa27dc79-3374-5f58-974a-bb02998d42a8', NULL, 649000.0),
+    ('3c1cd3e6-f32d-51bc-8296-d4ac1b30e9de', 'fa27dc79-3374-5f58-974a-bb02998d42a8', NULL, 649000.0),
+    ('4b35c95e-2c78-5d95-ba54-4abb85e9b4a7', 'fa27dc79-3374-5f58-974a-bb02998d42a8', NULL, 617000.0),
+    ('0a9333a3-6a59-5961-aec6-ba705956afeb', 'fa27dc79-3374-5f58-974a-bb02998d42a8', NULL, 604000.0),
+    ('0c607b84-3f5e-5dc8-b185-9427ce5a65ac', '1d9499a5-c2f9-50f8-bec4-4c1e79bf3d1b', NULL, 1250000.0),
+    ('3c1cd3e6-f32d-51bc-8296-d4ac1b30e9de', '1d9499a5-c2f9-50f8-bec4-4c1e79bf3d1b', NULL, 1250000.0),
+    ('4b35c95e-2c78-5d95-ba54-4abb85e9b4a7', '1d9499a5-c2f9-50f8-bec4-4c1e79bf3d1b', NULL, 1188000.0),
+    ('0a9333a3-6a59-5961-aec6-ba705956afeb', '1d9499a5-c2f9-50f8-bec4-4c1e79bf3d1b', NULL, 1163000.0),
+    ('0c607b84-3f5e-5dc8-b185-9427ce5a65ac', '6c0c1ed8-6f18-5115-b078-8fe5a60d16ab', NULL, 1250000.0),
+    ('3c1cd3e6-f32d-51bc-8296-d4ac1b30e9de', '6c0c1ed8-6f18-5115-b078-8fe5a60d16ab', NULL, 1250000.0),
+    ('4b35c95e-2c78-5d95-ba54-4abb85e9b4a7', '6c0c1ed8-6f18-5115-b078-8fe5a60d16ab', NULL, 1188000.0),
+    ('0a9333a3-6a59-5961-aec6-ba705956afeb', '6c0c1ed8-6f18-5115-b078-8fe5a60d16ab', NULL, 1163000.0),
+    ('0c607b84-3f5e-5dc8-b185-9427ce5a65ac', '08517b28-ad84-51ac-87e1-eddb3b3ebe77', NULL, 1250000.0),
+    ('3c1cd3e6-f32d-51bc-8296-d4ac1b30e9de', '08517b28-ad84-51ac-87e1-eddb3b3ebe77', NULL, 1250000.0),
+    ('4b35c95e-2c78-5d95-ba54-4abb85e9b4a7', '08517b28-ad84-51ac-87e1-eddb3b3ebe77', NULL, 1188000.0),
+    ('0a9333a3-6a59-5961-aec6-ba705956afeb', '08517b28-ad84-51ac-87e1-eddb3b3ebe77', NULL, 1163000.0),
+    ('0c607b84-3f5e-5dc8-b185-9427ce5a65ac', '3ac92503-b0d7-562b-8aaa-709a7da9087c', NULL, 1250000.0),
+    ('3c1cd3e6-f32d-51bc-8296-d4ac1b30e9de', '3ac92503-b0d7-562b-8aaa-709a7da9087c', NULL, 1250000.0),
+    ('4b35c95e-2c78-5d95-ba54-4abb85e9b4a7', '3ac92503-b0d7-562b-8aaa-709a7da9087c', NULL, 1188000.0),
+    ('0a9333a3-6a59-5961-aec6-ba705956afeb', '3ac92503-b0d7-562b-8aaa-709a7da9087c', NULL, 1163000.0),
+    ('0c607b84-3f5e-5dc8-b185-9427ce5a65ac', '29a45a4d-bd6d-5bac-9341-ecc1a02f8f7a', NULL, 479000.0),
+    ('3c1cd3e6-f32d-51bc-8296-d4ac1b30e9de', '29a45a4d-bd6d-5bac-9341-ecc1a02f8f7a', NULL, 479000.0),
+    ('4b35c95e-2c78-5d95-ba54-4abb85e9b4a7', '29a45a4d-bd6d-5bac-9341-ecc1a02f8f7a', NULL, 455000.0),
+    ('0a9333a3-6a59-5961-aec6-ba705956afeb', '29a45a4d-bd6d-5bac-9341-ecc1a02f8f7a', NULL, 445000.0),
+    ('0c607b84-3f5e-5dc8-b185-9427ce5a65ac', 'e81e0dad-a748-5597-84fa-83212b3b104e', NULL, 479000.0),
+    ('3c1cd3e6-f32d-51bc-8296-d4ac1b30e9de', 'e81e0dad-a748-5597-84fa-83212b3b104e', NULL, 479000.0),
+    ('4b35c95e-2c78-5d95-ba54-4abb85e9b4a7', 'e81e0dad-a748-5597-84fa-83212b3b104e', NULL, 455000.0),
+    ('0a9333a3-6a59-5961-aec6-ba705956afeb', 'e81e0dad-a748-5597-84fa-83212b3b104e', NULL, 445000.0),
+    ('0c607b84-3f5e-5dc8-b185-9427ce5a65ac', 'dfa677da-4a88-5576-8e7f-628198cc474d', NULL, 479000.0),
+    ('3c1cd3e6-f32d-51bc-8296-d4ac1b30e9de', 'dfa677da-4a88-5576-8e7f-628198cc474d', NULL, 479000.0),
+    ('4b35c95e-2c78-5d95-ba54-4abb85e9b4a7', 'dfa677da-4a88-5576-8e7f-628198cc474d', NULL, 455000.0),
+    ('0a9333a3-6a59-5961-aec6-ba705956afeb', 'dfa677da-4a88-5576-8e7f-628198cc474d', NULL, 445000.0),
+    ('0c607b84-3f5e-5dc8-b185-9427ce5a65ac', 'e5f9f658-7282-56f7-8f2e-dc823fbb9adc', NULL, 479000.0),
+    ('3c1cd3e6-f32d-51bc-8296-d4ac1b30e9de', 'e5f9f658-7282-56f7-8f2e-dc823fbb9adc', NULL, 479000.0),
+    ('4b35c95e-2c78-5d95-ba54-4abb85e9b4a7', 'e5f9f658-7282-56f7-8f2e-dc823fbb9adc', NULL, 455000.0),
+    ('0a9333a3-6a59-5961-aec6-ba705956afeb', 'e5f9f658-7282-56f7-8f2e-dc823fbb9adc', NULL, 445000.0),
+    ('0c607b84-3f5e-5dc8-b185-9427ce5a65ac', 'e9dc41d7-3625-5772-a5e5-3da4bbbe4a3c', NULL, 179000.0),
+    ('3c1cd3e6-f32d-51bc-8296-d4ac1b30e9de', 'e9dc41d7-3625-5772-a5e5-3da4bbbe4a3c', NULL, 179000.0),
+    ('4b35c95e-2c78-5d95-ba54-4abb85e9b4a7', 'e9dc41d7-3625-5772-a5e5-3da4bbbe4a3c', NULL, 170000.0),
+    ('0a9333a3-6a59-5961-aec6-ba705956afeb', 'e9dc41d7-3625-5772-a5e5-3da4bbbe4a3c', NULL, 166000.0),
+    ('0c607b84-3f5e-5dc8-b185-9427ce5a65ac', '8d6ee57f-6793-58b5-9c26-39c6839a032d', NULL, 179000.0),
+    ('3c1cd3e6-f32d-51bc-8296-d4ac1b30e9de', '8d6ee57f-6793-58b5-9c26-39c6839a032d', NULL, 179000.0),
+    ('4b35c95e-2c78-5d95-ba54-4abb85e9b4a7', '8d6ee57f-6793-58b5-9c26-39c6839a032d', NULL, 170000.0),
+    ('0a9333a3-6a59-5961-aec6-ba705956afeb', '8d6ee57f-6793-58b5-9c26-39c6839a032d', NULL, 166000.0),
+    ('0c607b84-3f5e-5dc8-b185-9427ce5a65ac', '93793ab2-caf9-5053-8356-3c41f4bccb22', NULL, 179000.0),
+    ('3c1cd3e6-f32d-51bc-8296-d4ac1b30e9de', '93793ab2-caf9-5053-8356-3c41f4bccb22', NULL, 179000.0),
+    ('4b35c95e-2c78-5d95-ba54-4abb85e9b4a7', '93793ab2-caf9-5053-8356-3c41f4bccb22', NULL, 170000.0),
+    ('0a9333a3-6a59-5961-aec6-ba705956afeb', '93793ab2-caf9-5053-8356-3c41f4bccb22', NULL, 166000.0),
+    ('0c607b84-3f5e-5dc8-b185-9427ce5a65ac', 'fe054901-6486-54ce-89b5-4e90cd4daf25', NULL, 179000.0),
+    ('3c1cd3e6-f32d-51bc-8296-d4ac1b30e9de', 'fe054901-6486-54ce-89b5-4e90cd4daf25', NULL, 179000.0),
+    ('4b35c95e-2c78-5d95-ba54-4abb85e9b4a7', 'fe054901-6486-54ce-89b5-4e90cd4daf25', NULL, 170000.0),
+    ('0a9333a3-6a59-5961-aec6-ba705956afeb', 'fe054901-6486-54ce-89b5-4e90cd4daf25', NULL, 166000.0),
+    ('0c607b84-3f5e-5dc8-b185-9427ce5a65ac', '4d6e66c1-5243-5ff6-a452-2a55d6756675', NULL, 799000.0),
+    ('3c1cd3e6-f32d-51bc-8296-d4ac1b30e9de', '4d6e66c1-5243-5ff6-a452-2a55d6756675', NULL, 799000.0),
+    ('4b35c95e-2c78-5d95-ba54-4abb85e9b4a7', '4d6e66c1-5243-5ff6-a452-2a55d6756675', NULL, 759000.0),
+    ('0a9333a3-6a59-5961-aec6-ba705956afeb', '4d6e66c1-5243-5ff6-a452-2a55d6756675', NULL, 743000.0),
+    ('0c607b84-3f5e-5dc8-b185-9427ce5a65ac', '567d78a5-d37c-57e4-ad11-ce37183a4508', NULL, 799000.0),
+    ('3c1cd3e6-f32d-51bc-8296-d4ac1b30e9de', '567d78a5-d37c-57e4-ad11-ce37183a4508', NULL, 799000.0),
+    ('4b35c95e-2c78-5d95-ba54-4abb85e9b4a7', '567d78a5-d37c-57e4-ad11-ce37183a4508', NULL, 759000.0),
+    ('0a9333a3-6a59-5961-aec6-ba705956afeb', '567d78a5-d37c-57e4-ad11-ce37183a4508', NULL, 743000.0),
+    ('0c607b84-3f5e-5dc8-b185-9427ce5a65ac', '7961677a-2db1-5cf9-a777-c12fec5a0846', NULL, 799000.0),
+    ('3c1cd3e6-f32d-51bc-8296-d4ac1b30e9de', '7961677a-2db1-5cf9-a777-c12fec5a0846', NULL, 799000.0),
+    ('4b35c95e-2c78-5d95-ba54-4abb85e9b4a7', '7961677a-2db1-5cf9-a777-c12fec5a0846', NULL, 759000.0),
+    ('0a9333a3-6a59-5961-aec6-ba705956afeb', '7961677a-2db1-5cf9-a777-c12fec5a0846', NULL, 743000.0),
+    ('0c607b84-3f5e-5dc8-b185-9427ce5a65ac', 'e6a48fd8-ba0b-5822-a4b9-e364a11350d2', NULL, 799000.0),
+    ('3c1cd3e6-f32d-51bc-8296-d4ac1b30e9de', 'e6a48fd8-ba0b-5822-a4b9-e364a11350d2', NULL, 799000.0),
+    ('4b35c95e-2c78-5d95-ba54-4abb85e9b4a7', 'e6a48fd8-ba0b-5822-a4b9-e364a11350d2', NULL, 759000.0),
+    ('0a9333a3-6a59-5961-aec6-ba705956afeb', 'e6a48fd8-ba0b-5822-a4b9-e364a11350d2', NULL, 743000.0),
+    ('0c607b84-3f5e-5dc8-b185-9427ce5a65ac', 'ccc54f76-17b4-5e7d-88e5-8b2638278a0c', NULL, 579000.0),
+    ('3c1cd3e6-f32d-51bc-8296-d4ac1b30e9de', 'ccc54f76-17b4-5e7d-88e5-8b2638278a0c', NULL, 579000.0),
+    ('4b35c95e-2c78-5d95-ba54-4abb85e9b4a7', 'ccc54f76-17b4-5e7d-88e5-8b2638278a0c', NULL, 550000.0),
+    ('0a9333a3-6a59-5961-aec6-ba705956afeb', 'ccc54f76-17b4-5e7d-88e5-8b2638278a0c', NULL, 538000.0),
+    ('0c607b84-3f5e-5dc8-b185-9427ce5a65ac', 'd5f328c8-bff2-555f-8e97-0b89b5088ea0', NULL, 579000.0),
+    ('3c1cd3e6-f32d-51bc-8296-d4ac1b30e9de', 'd5f328c8-bff2-555f-8e97-0b89b5088ea0', NULL, 579000.0),
+    ('4b35c95e-2c78-5d95-ba54-4abb85e9b4a7', 'd5f328c8-bff2-555f-8e97-0b89b5088ea0', NULL, 550000.0),
+    ('0a9333a3-6a59-5961-aec6-ba705956afeb', 'd5f328c8-bff2-555f-8e97-0b89b5088ea0', NULL, 538000.0),
+    ('0c607b84-3f5e-5dc8-b185-9427ce5a65ac', '4aa67b9c-d40a-5555-b176-50909617a5ee', NULL, 579000.0),
+    ('3c1cd3e6-f32d-51bc-8296-d4ac1b30e9de', '4aa67b9c-d40a-5555-b176-50909617a5ee', NULL, 579000.0),
+    ('4b35c95e-2c78-5d95-ba54-4abb85e9b4a7', '4aa67b9c-d40a-5555-b176-50909617a5ee', NULL, 550000.0),
+    ('0a9333a3-6a59-5961-aec6-ba705956afeb', '4aa67b9c-d40a-5555-b176-50909617a5ee', NULL, 538000.0),
+    ('0c607b84-3f5e-5dc8-b185-9427ce5a65ac', '6d195bd5-a790-5e27-b806-3876bbdef442', NULL, 579000.0),
+    ('3c1cd3e6-f32d-51bc-8296-d4ac1b30e9de', '6d195bd5-a790-5e27-b806-3876bbdef442', NULL, 579000.0),
+    ('4b35c95e-2c78-5d95-ba54-4abb85e9b4a7', '6d195bd5-a790-5e27-b806-3876bbdef442', NULL, 550000.0),
+    ('0a9333a3-6a59-5961-aec6-ba705956afeb', '6d195bd5-a790-5e27-b806-3876bbdef442', NULL, 538000.0),
+    ('0c607b84-3f5e-5dc8-b185-9427ce5a65ac', 'e9d73401-d6ef-564d-a08f-d1b23138f241', NULL, 649000.0),
+    ('3c1cd3e6-f32d-51bc-8296-d4ac1b30e9de', 'e9d73401-d6ef-564d-a08f-d1b23138f241', NULL, 649000.0),
+    ('4b35c95e-2c78-5d95-ba54-4abb85e9b4a7', 'e9d73401-d6ef-564d-a08f-d1b23138f241', NULL, 617000.0),
+    ('0a9333a3-6a59-5961-aec6-ba705956afeb', 'e9d73401-d6ef-564d-a08f-d1b23138f241', NULL, 604000.0),
+    ('0c607b84-3f5e-5dc8-b185-9427ce5a65ac', '2ce11265-d9e0-5d32-b2b5-ff52cb2acf9f', NULL, 649000.0),
+    ('3c1cd3e6-f32d-51bc-8296-d4ac1b30e9de', '2ce11265-d9e0-5d32-b2b5-ff52cb2acf9f', NULL, 649000.0),
+    ('4b35c95e-2c78-5d95-ba54-4abb85e9b4a7', '2ce11265-d9e0-5d32-b2b5-ff52cb2acf9f', NULL, 617000.0),
+    ('0a9333a3-6a59-5961-aec6-ba705956afeb', '2ce11265-d9e0-5d32-b2b5-ff52cb2acf9f', NULL, 604000.0),
+    ('0c607b84-3f5e-5dc8-b185-9427ce5a65ac', '7dc84db0-7b0c-55d6-a61c-41699d2e20e4', NULL, 649000.0),
+    ('3c1cd3e6-f32d-51bc-8296-d4ac1b30e9de', '7dc84db0-7b0c-55d6-a61c-41699d2e20e4', NULL, 649000.0),
+    ('4b35c95e-2c78-5d95-ba54-4abb85e9b4a7', '7dc84db0-7b0c-55d6-a61c-41699d2e20e4', NULL, 617000.0),
+    ('0a9333a3-6a59-5961-aec6-ba705956afeb', '7dc84db0-7b0c-55d6-a61c-41699d2e20e4', NULL, 604000.0),
+    ('0c607b84-3f5e-5dc8-b185-9427ce5a65ac', 'e88a359d-1441-57f9-bc05-a6828b45d138', NULL, 649000.0),
+    ('3c1cd3e6-f32d-51bc-8296-d4ac1b30e9de', 'e88a359d-1441-57f9-bc05-a6828b45d138', NULL, 649000.0),
+    ('4b35c95e-2c78-5d95-ba54-4abb85e9b4a7', 'e88a359d-1441-57f9-bc05-a6828b45d138', NULL, 617000.0),
+    ('0a9333a3-6a59-5961-aec6-ba705956afeb', 'e88a359d-1441-57f9-bc05-a6828b45d138', NULL, 604000.0),
+    ('0c607b84-3f5e-5dc8-b185-9427ce5a65ac', 'b87675c7-332e-5523-b30b-85b2b8dba49c', NULL, 849000.0),
+    ('3c1cd3e6-f32d-51bc-8296-d4ac1b30e9de', 'b87675c7-332e-5523-b30b-85b2b8dba49c', NULL, 849000.0),
+    ('4b35c95e-2c78-5d95-ba54-4abb85e9b4a7', 'b87675c7-332e-5523-b30b-85b2b8dba49c', NULL, 807000.0),
+    ('0a9333a3-6a59-5961-aec6-ba705956afeb', 'b87675c7-332e-5523-b30b-85b2b8dba49c', NULL, 790000.0),
+    ('0c607b84-3f5e-5dc8-b185-9427ce5a65ac', 'e4dfede1-0c37-5676-a81f-c27d17a55aa6', NULL, 849000.0),
+    ('3c1cd3e6-f32d-51bc-8296-d4ac1b30e9de', 'e4dfede1-0c37-5676-a81f-c27d17a55aa6', NULL, 849000.0),
+    ('4b35c95e-2c78-5d95-ba54-4abb85e9b4a7', 'e4dfede1-0c37-5676-a81f-c27d17a55aa6', NULL, 807000.0),
+    ('0a9333a3-6a59-5961-aec6-ba705956afeb', 'e4dfede1-0c37-5676-a81f-c27d17a55aa6', NULL, 790000.0),
+    ('0c607b84-3f5e-5dc8-b185-9427ce5a65ac', '1c4fe18f-6b9b-5f8d-8999-cec34ecb9634', NULL, 849000.0),
+    ('3c1cd3e6-f32d-51bc-8296-d4ac1b30e9de', '1c4fe18f-6b9b-5f8d-8999-cec34ecb9634', NULL, 849000.0),
+    ('4b35c95e-2c78-5d95-ba54-4abb85e9b4a7', '1c4fe18f-6b9b-5f8d-8999-cec34ecb9634', NULL, 807000.0),
+    ('0a9333a3-6a59-5961-aec6-ba705956afeb', '1c4fe18f-6b9b-5f8d-8999-cec34ecb9634', NULL, 790000.0),
+    ('0c607b84-3f5e-5dc8-b185-9427ce5a65ac', 'f5f40e2f-ea3d-5c1e-ad6a-0e0477d106dd', NULL, 849000.0),
+    ('3c1cd3e6-f32d-51bc-8296-d4ac1b30e9de', 'f5f40e2f-ea3d-5c1e-ad6a-0e0477d106dd', NULL, 849000.0),
+    ('4b35c95e-2c78-5d95-ba54-4abb85e9b4a7', 'f5f40e2f-ea3d-5c1e-ad6a-0e0477d106dd', NULL, 807000.0),
+    ('0a9333a3-6a59-5961-aec6-ba705956afeb', 'f5f40e2f-ea3d-5c1e-ad6a-0e0477d106dd', NULL, 790000.0),
+    ('0c607b84-3f5e-5dc8-b185-9427ce5a65ac', 'ab0218c8-c6c9-567a-88c8-dc23b01d25c2', NULL, 579000.0),
+    ('3c1cd3e6-f32d-51bc-8296-d4ac1b30e9de', 'ab0218c8-c6c9-567a-88c8-dc23b01d25c2', NULL, 579000.0),
+    ('4b35c95e-2c78-5d95-ba54-4abb85e9b4a7', 'ab0218c8-c6c9-567a-88c8-dc23b01d25c2', NULL, 550000.0),
+    ('0a9333a3-6a59-5961-aec6-ba705956afeb', 'ab0218c8-c6c9-567a-88c8-dc23b01d25c2', NULL, 538000.0),
+    ('0c607b84-3f5e-5dc8-b185-9427ce5a65ac', 'da7e4f0e-d2fe-5687-b333-f5dc1c2bf853', NULL, 579000.0),
+    ('3c1cd3e6-f32d-51bc-8296-d4ac1b30e9de', 'da7e4f0e-d2fe-5687-b333-f5dc1c2bf853', NULL, 579000.0),
+    ('4b35c95e-2c78-5d95-ba54-4abb85e9b4a7', 'da7e4f0e-d2fe-5687-b333-f5dc1c2bf853', NULL, 550000.0),
+    ('0a9333a3-6a59-5961-aec6-ba705956afeb', 'da7e4f0e-d2fe-5687-b333-f5dc1c2bf853', NULL, 538000.0)
+ON CONFLICT (ChannelID, VariantID) DO UPDATE SET SellingPrice = EXCLUDED.SellingPrice, UpdatedAt = NOW();
+
+
+
+-- 10. Liên kết nhà cung cấp - biến thể
 
 INSERT INTO SUPPLIER_PRODUCT (SupplierID, VariantID, SupplierSKU, ContractPrice, LeadTimeDays, MinOrderQuantity, IsPreferred) VALUES
-('00000000-0000-0000-0000-000000000801', '00000000-0000-0000-0000-000000000701', 'LV-SML-WHT-S', 150000, 7, 20, TRUE),
-('00000000-0000-0000-0000-000000000801', '00000000-0000-0000-0000-000000000702', 'LV-SML-NVY-M', 150000, 7, 20, TRUE)
-ON CONFLICT (SupplierID, VariantID) DO NOTHING;
+    ('b0cad886-cf6a-59a7-8711-a7b856c0e493', '66fb4116-aa2e-5b46-8821-b651835fd5de', '10S25TSS026_007', 240000.0, 7, 1, TRUE),
+    ('b0cad886-cf6a-59a7-8711-a7b856c0e493', 'dd2fcc3f-5962-5f64-be70-23db4e30e00c', '10S25TSS026_006', 240000.0, 7, 1, TRUE),
+    ('b0cad886-cf6a-59a7-8711-a7b856c0e493', '1ae64a6d-0194-5030-95d3-8a50c9211953', '10S25TSS026_002', 240000.0, 7, 1, TRUE),
+    ('b0cad886-cf6a-59a7-8711-a7b856c0e493', '25ce8630-4638-5010-8dba-1ef1747822e5', '10S25TSS026_001', 240000.0, 7, 1, TRUE),
+    ('b0cad886-cf6a-59a7-8711-a7b856c0e493', '47953b57-5311-5682-a202-cf128d6ff8bb', '10S26TSSW046_005', 230000.0, 7, 1, TRUE),
+    ('b0cad886-cf6a-59a7-8711-a7b856c0e493', '319146fc-4bd3-54f0-a82f-310fadde1369', '10S26TSSW046_007', 230000.0, 7, 1, TRUE),
+    ('b0cad886-cf6a-59a7-8711-a7b856c0e493', '77c0943b-b938-51f7-b8ec-01a7a6dccfe8', '10S26TSSW046_000', 230000.0, 7, 1, TRUE),
+    ('b0cad886-cf6a-59a7-8711-a7b856c0e493', '7ac2cc8d-86f2-5fba-aa0d-c6d46f70efae', '10S26TSSW046_002', 230000.0, 7, 1, TRUE),
+    ('b0cad886-cf6a-59a7-8711-a7b856c0e493', '2efe467a-59e9-5d86-942a-778dd09a7ef3', '10S25SHL005_033', 210000.0, 7, 1, TRUE),
+    ('b0cad886-cf6a-59a7-8711-a7b856c0e493', '46cabb7b-ed52-5385-9fb4-c5500a9bc30e', '10S25SHL005_031', 210000.0, 7, 1, TRUE),
+    ('b0cad886-cf6a-59a7-8711-a7b856c0e493', '3c395bcb-ff58-5fb9-a82f-6f85ad4415f9', '10S25SHL005_034', 210000.0, 7, 1, TRUE),
+    ('b0cad886-cf6a-59a7-8711-a7b856c0e493', 'c0545b67-041c-5e19-8558-587ab938bc36', '10S25SHL005_032', 210000.0, 7, 1, TRUE),
+    ('b0cad886-cf6a-59a7-8711-a7b856c0e493', '323f117a-8ea6-5d8b-9b38-67f0d5945aa4', '10F25DPA025_005', 285000.0, 7, 1, TRUE),
+    ('b0cad886-cf6a-59a7-8711-a7b856c0e493', 'cdc12fd4-b4fe-55b4-969d-7a54fa746301', '10F25DPA025_006', 285000.0, 7, 1, TRUE),
+    ('b0cad886-cf6a-59a7-8711-a7b856c0e493', '6643155c-0f91-525b-8b6f-3fcb687e937c', '10F25DPA025_007', 285000.0, 7, 1, TRUE),
+    ('b0cad886-cf6a-59a7-8711-a7b856c0e493', '3c967e91-c3fb-5762-9fe1-ef25f167f060', '10F25DPA025_001', 285000.0, 7, 1, TRUE),
+    ('d310558d-e9f7-5cda-8302-33917374581b', '677a14ba-62df-52f1-a395-07d35f2a537f', '10F25SKIW020_004', 310000.0, 7, 1, TRUE),
+    ('d310558d-e9f7-5cda-8302-33917374581b', 'a98a0ae4-f04b-599c-a8a8-f684956a8fd7', '10F25SKIW020_005', 310000.0, 7, 1, TRUE),
+    ('d310558d-e9f7-5cda-8302-33917374581b', 'cc0bd79f-b0a7-5707-b09b-cf81d3e4dca3', '10F25SKIW020_001', 310000.0, 7, 1, TRUE),
+    ('d310558d-e9f7-5cda-8302-33917374581b', 'fa27dc79-3374-5f58-974a-bb02998d42a8', '10F25SKIW020_003', 310000.0, 7, 1, TRUE),
+    ('4a02a2bd-bd5a-560d-9b3f-487dca950654', '1d9499a5-c2f9-50f8-bec4-4c1e79bf3d1b', '10F24VES010_000', 620000.0, 7, 1, TRUE),
+    ('4a02a2bd-bd5a-560d-9b3f-487dca950654', '6c0c1ed8-6f18-5115-b078-8fe5a60d16ab', '10F24VES010_017', 620000.0, 7, 1, TRUE),
+    ('4a02a2bd-bd5a-560d-9b3f-487dca950654', '08517b28-ad84-51ac-87e1-eddb3b3ebe77', '10F24VES010_005', 620000.0, 7, 1, TRUE),
+    ('4a02a2bd-bd5a-560d-9b3f-487dca950654', '3ac92503-b0d7-562b-8aaa-709a7da9087c', '10F24VES010_008', 620000.0, 7, 1, TRUE),
+    ('4a02a2bd-bd5a-560d-9b3f-487dca950654', '29a45a4d-bd6d-5bac-9341-ecc1a02f8f7a', '10S26PSH008_000', 220000.0, 7, 1, TRUE),
+    ('4a02a2bd-bd5a-560d-9b3f-487dca950654', 'e81e0dad-a748-5597-84fa-83212b3b104e', '10S26PSH008_003', 220000.0, 7, 1, TRUE),
+    ('4a02a2bd-bd5a-560d-9b3f-487dca950654', 'dfa677da-4a88-5576-8e7f-628198cc474d', '10S26PSH008_008', 220000.0, 7, 1, TRUE),
+    ('4a02a2bd-bd5a-560d-9b3f-487dca950654', 'e5f9f658-7282-56f7-8f2e-dc823fbb9adc', '10S26PSH008_006', 220000.0, 7, 1, TRUE),
+    ('4a02a2bd-bd5a-560d-9b3f-487dca950654', 'e9dc41d7-3625-5772-a5e5-3da4bbbe4a3c', '10S25TTOW001_006', 40000.0, 7, 1, TRUE),
+    ('4a02a2bd-bd5a-560d-9b3f-487dca950654', '8d6ee57f-6793-58b5-9c26-39c6839a032d', '10S25TTOW001_026', 40000.0, 7, 1, TRUE),
+    ('4a02a2bd-bd5a-560d-9b3f-487dca950654', '93793ab2-caf9-5053-8356-3c41f4bccb22', '10S25TTOW001_002', 40000.0, 7, 1, TRUE),
+    ('4a02a2bd-bd5a-560d-9b3f-487dca950654', 'fe054901-6486-54ce-89b5-4e90cd4daf25', '10S25TTOW001_010', 40000.0, 7, 1, TRUE),
+    ('4a02a2bd-bd5a-560d-9b3f-487dca950654', '4d6e66c1-5243-5ff6-a452-2a55d6756675', '10F25DJA007_000', 385000.0, 7, 1, TRUE),
+    ('4a02a2bd-bd5a-560d-9b3f-487dca950654', '567d78a5-d37c-57e4-ad11-ce37183a4508', '10F25DJA007_001', 385000.0, 7, 1, TRUE),
+    ('4a02a2bd-bd5a-560d-9b3f-487dca950654', '7961677a-2db1-5cf9-a777-c12fec5a0846', '10F25DJA007_002', 385000.0, 7, 1, TRUE),
+    ('4a02a2bd-bd5a-560d-9b3f-487dca950654', 'e6a48fd8-ba0b-5822-a4b9-e364a11350d2', '10F25DJA007_003', 385000.0, 7, 1, TRUE),
+    ('4a02a2bd-bd5a-560d-9b3f-487dca950654', 'ccc54f76-17b4-5e7d-88e5-8b2638278a0c', '10S26KNIW016_011', 279000.0, 7, 1, TRUE),
+    ('4a02a2bd-bd5a-560d-9b3f-487dca950654', 'd5f328c8-bff2-555f-8e97-0b89b5088ea0', '10S26KNIW016_007', 279000.0, 7, 1, TRUE),
+    ('4a02a2bd-bd5a-560d-9b3f-487dca950654', '4aa67b9c-d40a-5555-b176-50909617a5ee', '10S26KNIW016_002', 279000.0, 7, 1, TRUE),
+    ('4a02a2bd-bd5a-560d-9b3f-487dca950654', '6d195bd5-a790-5e27-b806-3876bbdef442', '10S26KNIW016_008', 279000.0, 7, 1, TRUE),
+    ('b0cad886-cf6a-59a7-8711-a7b856c0e493', 'e9d73401-d6ef-564d-a08f-d1b23138f241', '10F25DREW003_000', 300000.0, 7, 1, TRUE),
+    ('b0cad886-cf6a-59a7-8711-a7b856c0e493', '2ce11265-d9e0-5d32-b2b5-ff52cb2acf9f', '10F25DREW003_001', 300000.0, 7, 1, TRUE),
+    ('b0cad886-cf6a-59a7-8711-a7b856c0e493', '7dc84db0-7b0c-55d6-a61c-41699d2e20e4', '10F25DREW003_005', 300000.0, 7, 1, TRUE),
+    ('b0cad886-cf6a-59a7-8711-a7b856c0e493', 'e88a359d-1441-57f9-bc05-a6828b45d138', '10F25DREW003_006', 300000.0, 7, 1, TRUE),
+    ('b0cad886-cf6a-59a7-8711-a7b856c0e493', 'b87675c7-332e-5523-b30b-85b2b8dba49c', '10S26TSS042_009', 410000.0, 7, 1, TRUE),
+    ('b0cad886-cf6a-59a7-8711-a7b856c0e493', 'e4dfede1-0c37-5676-a81f-c27d17a55aa6', '10S26TSS042_021', 410000.0, 7, 1, TRUE),
+    ('b0cad886-cf6a-59a7-8711-a7b856c0e493', '1c4fe18f-6b9b-5f8d-8999-cec34ecb9634', '10S26TSS042_013', 410000.0, 7, 1, TRUE),
+    ('b0cad886-cf6a-59a7-8711-a7b856c0e493', 'f5f40e2f-ea3d-5c1e-ad6a-0e0477d106dd', '10S26TSS042_017', 410000.0, 7, 1, TRUE),
+    ('b0cad886-cf6a-59a7-8711-a7b856c0e493', 'ab0218c8-c6c9-567a-88c8-dc23b01d25c2', '10F23PKNU001_010', 280000.0, 7, 1, TRUE),
+    ('b0cad886-cf6a-59a7-8711-a7b856c0e493', 'da7e4f0e-d2fe-5687-b333-f5dc1c2bf853', '10F23PKNU001_011', 280000.0, 7, 1, TRUE)
+ON CONFLICT (SupplierID, VariantID) DO UPDATE SET SupplierSKU = EXCLUDED.SupplierSKU, ContractPrice = EXCLUDED.ContractPrice, LeadTimeDays = EXCLUDED.LeadTimeDays, MinOrderQuantity = EXCLUDED.MinOrderQuantity, IsPreferred = EXCLUDED.IsPreferred, UpdatedAt = NOW();
 
--- SALES CHANNEL
-INSERT INTO SALES_CHANNEL (ChannelID, ChannelName, ChannelType, Status, ChannelConfig) VALUES
-('00000000-0000-0000-0000-000000000901', 'POS Quận 1', 'pos', 'active', '{"branch_id": "00000000-0000-0000-0000-000000000202"}'::JSONB),
-('00000000-0000-0000-0000-000000000902', 'Website SilkRoad', 'website', 'active', '{"auto_sync_stock": true}'::JSONB),
-('00000000-0000-0000-0000-000000000903', 'Shopee Official Store', 'shopee', 'active', '{"shop_id": "demo_shop", "auto_sync_stock": true}'::JSONB)
-ON CONFLICT (ChannelID) DO NOTHING;
 
--- STOCK
+
+-- 11. Tồn kho ban đầu
+
 INSERT INTO STOCK (BranchID, VariantID, Quantity, ReservedQuantity, MinStockLevel, MaxStockLevel) VALUES
-('00000000-0000-0000-0000-000000000201', '00000000-0000-0000-0000-000000000701', 100, 0, 10, 200),
-('00000000-0000-0000-0000-000000000201', '00000000-0000-0000-0000-000000000702', 80, 0, 10, 200),
-('00000000-0000-0000-0000-000000000202', '00000000-0000-0000-0000-000000000701', 20, 0, 5, 60),
-('00000000-0000-0000-0000-000000000202', '00000000-0000-0000-0000-000000000702', 15, 0, 5, 60)
-ON CONFLICT (BranchID, VariantID) DO NOTHING;
+    ('82e5f6b4-ca50-503b-821b-c8a749407418', '66fb4116-aa2e-5b46-8821-b651835fd5de', 20, 0, 5, 50),
+    ('82e5f6b4-ca50-503b-821b-c8a749407418', 'dd2fcc3f-5962-5f64-be70-23db4e30e00c', 51, 2, 6, 92),
+    ('82e5f6b4-ca50-503b-821b-c8a749407418', '1ae64a6d-0194-5030-95d3-8a50c9211953', 50, 23, 8, 71),
+    ('82e5f6b4-ca50-503b-821b-c8a749407418', '25ce8630-4638-5010-8dba-1ef1747822e5', 25, 5, 6, 60),
+    ('82e5f6b4-ca50-503b-821b-c8a749407418', '47953b57-5311-5682-a202-cf128d6ff8bb', 40, 8, 5, 68),
+    ('82e5f6b4-ca50-503b-821b-c8a749407418', '319146fc-4bd3-54f0-a82f-310fadde1369', 25, 7, 4, 82),
+    ('82e5f6b4-ca50-503b-821b-c8a749407418', '77c0943b-b938-51f7-b8ec-01a7a6dccfe8', 54, 12, 4, 60),
+    ('82e5f6b4-ca50-503b-821b-c8a749407418', '7ac2cc8d-86f2-5fba-aa0d-c6d46f70efae', 11, 5, 4, 73),
+    ('82e5f6b4-ca50-503b-821b-c8a749407418', '2efe467a-59e9-5d86-942a-778dd09a7ef3', 16, 16, 5, 70),
+    ('82e5f6b4-ca50-503b-821b-c8a749407418', '46cabb7b-ed52-5385-9fb4-c5500a9bc30e', 46, 5, 8, 97),
+    ('82e5f6b4-ca50-503b-821b-c8a749407418', '3c395bcb-ff58-5fb9-a82f-6f85ad4415f9', 18, 8, 8, 97),
+    ('82e5f6b4-ca50-503b-821b-c8a749407418', 'c0545b67-041c-5e19-8558-587ab938bc36', 44, 7, 7, 63),
+    ('82e5f6b4-ca50-503b-821b-c8a749407418', '323f117a-8ea6-5d8b-9b38-67f0d5945aa4', 10, 6, 6, 72),
+    ('82e5f6b4-ca50-503b-821b-c8a749407418', 'cdc12fd4-b4fe-55b4-969d-7a54fa746301', 34, 8, 4, 74),
+    ('82e5f6b4-ca50-503b-821b-c8a749407418', '6643155c-0f91-525b-8b6f-3fcb687e937c', 25, 2, 5, 58),
+    ('82e5f6b4-ca50-503b-821b-c8a749407418', '3c967e91-c3fb-5762-9fe1-ef25f167f060', 38, 3, 6, 57),
+    ('bb16bcff-6ed0-5f39-94f2-0a9f3116e2c7', '677a14ba-62df-52f1-a395-07d35f2a537f', 21, 2, 7, 85),
+    ('bb16bcff-6ed0-5f39-94f2-0a9f3116e2c7', 'a98a0ae4-f04b-599c-a8a8-f684956a8fd7', 25, 3, 8, 94),
+    ('bb16bcff-6ed0-5f39-94f2-0a9f3116e2c7', 'cc0bd79f-b0a7-5707-b09b-cf81d3e4dca3', 32, 20, 3, 92),
+    ('bb16bcff-6ed0-5f39-94f2-0a9f3116e2c7', 'fa27dc79-3374-5f58-974a-bb02998d42a8', 49, 25, 5, 57),
+    ('bb16bcff-6ed0-5f39-94f2-0a9f3116e2c7', '1d9499a5-c2f9-50f8-bec4-4c1e79bf3d1b', 25, 25, 4, 86),
+    ('bb16bcff-6ed0-5f39-94f2-0a9f3116e2c7', '6c0c1ed8-6f18-5115-b078-8fe5a60d16ab', 42, 20, 4, 82),
+    ('bb16bcff-6ed0-5f39-94f2-0a9f3116e2c7', '08517b28-ad84-51ac-87e1-eddb3b3ebe77', 11, 8, 4, 67),
+    ('bb16bcff-6ed0-5f39-94f2-0a9f3116e2c7', '3ac92503-b0d7-562b-8aaa-709a7da9087c', 29, 2, 6, 93),
+    ('bb16bcff-6ed0-5f39-94f2-0a9f3116e2c7', '29a45a4d-bd6d-5bac-9341-ecc1a02f8f7a', 25, 12, 8, 95),
+    ('bb16bcff-6ed0-5f39-94f2-0a9f3116e2c7', 'e81e0dad-a748-5597-84fa-83212b3b104e', 37, 8, 7, 70),
+    ('bb16bcff-6ed0-5f39-94f2-0a9f3116e2c7', 'dfa677da-4a88-5576-8e7f-628198cc474d', 19, 2, 7, 80),
+    ('bb16bcff-6ed0-5f39-94f2-0a9f3116e2c7', 'e5f9f658-7282-56f7-8f2e-dc823fbb9adc', 42, 3, 6, 79),
+    ('bb16bcff-6ed0-5f39-94f2-0a9f3116e2c7', 'e9dc41d7-3625-5772-a5e5-3da4bbbe4a3c', 31, 2, 5, 84),
+    ('bb16bcff-6ed0-5f39-94f2-0a9f3116e2c7', '8d6ee57f-6793-58b5-9c26-39c6839a032d', 53, 9, 6, 78),
+    ('bb16bcff-6ed0-5f39-94f2-0a9f3116e2c7', '93793ab2-caf9-5053-8356-3c41f4bccb22', 29, 10, 8, 63),
+    ('bb16bcff-6ed0-5f39-94f2-0a9f3116e2c7', 'fe054901-6486-54ce-89b5-4e90cd4daf25', 12, 12, 5, 73),
+    ('bb16bcff-6ed0-5f39-94f2-0a9f3116e2c7', '4d6e66c1-5243-5ff6-a452-2a55d6756675', 31, 22, 4, 60),
+    ('bb16bcff-6ed0-5f39-94f2-0a9f3116e2c7', '567d78a5-d37c-57e4-ad11-ce37183a4508', 52, 5, 5, 51),
+    ('bb16bcff-6ed0-5f39-94f2-0a9f3116e2c7', '7961677a-2db1-5cf9-a777-c12fec5a0846', 39, 8, 6, 70),
+    ('bb16bcff-6ed0-5f39-94f2-0a9f3116e2c7', 'e6a48fd8-ba0b-5822-a4b9-e364a11350d2', 27, 11, 4, 78),
+    ('bb16bcff-6ed0-5f39-94f2-0a9f3116e2c7', 'ccc54f76-17b4-5e7d-88e5-8b2638278a0c', 48, 5, 4, 89),
+    ('bb16bcff-6ed0-5f39-94f2-0a9f3116e2c7', 'd5f328c8-bff2-555f-8e97-0b89b5088ea0', 14, 12, 8, 90),
+    ('bb16bcff-6ed0-5f39-94f2-0a9f3116e2c7', '4aa67b9c-d40a-5555-b176-50909617a5ee', 25, 22, 6, 96),
+    ('bb16bcff-6ed0-5f39-94f2-0a9f3116e2c7', '6d195bd5-a790-5e27-b806-3876bbdef442', 15, 15, 6, 93),
+    ('bb16bcff-6ed0-5f39-94f2-0a9f3116e2c7', 'e9d73401-d6ef-564d-a08f-d1b23138f241', 21, 8, 6, 82),
+    ('bb16bcff-6ed0-5f39-94f2-0a9f3116e2c7', '2ce11265-d9e0-5d32-b2b5-ff52cb2acf9f', 43, 7, 4, 66),
+    ('bb16bcff-6ed0-5f39-94f2-0a9f3116e2c7', '7dc84db0-7b0c-55d6-a61c-41699d2e20e4', 53, 6, 4, 52),
+    ('bb16bcff-6ed0-5f39-94f2-0a9f3116e2c7', 'e88a359d-1441-57f9-bc05-a6828b45d138', 58, 5, 4, 67),
+    ('82e5f6b4-ca50-503b-821b-c8a749407418', 'b87675c7-332e-5523-b30b-85b2b8dba49c', 26, 10, 7, 50),
+    ('82e5f6b4-ca50-503b-821b-c8a749407418', 'e4dfede1-0c37-5676-a81f-c27d17a55aa6', 41, 11, 5, 63),
+    ('82e5f6b4-ca50-503b-821b-c8a749407418', '1c4fe18f-6b9b-5f8d-8999-cec34ecb9634', 14, 12, 5, 71),
+    ('82e5f6b4-ca50-503b-821b-c8a749407418', 'f5f40e2f-ea3d-5c1e-ad6a-0e0477d106dd', 14, 14, 3, 68),
+    ('82e5f6b4-ca50-503b-821b-c8a749407418', 'ab0218c8-c6c9-567a-88c8-dc23b01d25c2', 51, 9, 8, 61),
+    ('82e5f6b4-ca50-503b-821b-c8a749407418', 'da7e4f0e-d2fe-5687-b333-f5dc1c2bf853', 48, 7, 7, 66)
+ON CONFLICT (BranchID, VariantID) DO UPDATE SET Quantity = EXCLUDED.Quantity, ReservedQuantity = EXCLUDED.ReservedQuantity, MinStockLevel = EXCLUDED.MinStockLevel, MaxStockLevel = EXCLUDED.MaxStockLevel, LastUpdated = NOW();
 
--- INVENTORY ALLOCATION
-INSERT INTO INVENTORY_ALLOCATION (BranchID, VariantID, ChannelID, AllocatedQuantity, SoldQuantity) VALUES
-('00000000-0000-0000-0000-000000000202', '00000000-0000-0000-0000-000000000701', '00000000-0000-0000-0000-000000000901', 10, 0),
-('00000000-0000-0000-0000-000000000202', '00000000-0000-0000-0000-000000000701', '00000000-0000-0000-0000-000000000902', 5, 0),
-('00000000-0000-0000-0000-000000000202', '00000000-0000-0000-0000-000000000701', '00000000-0000-0000-0000-000000000903', 5, 0),
-('00000000-0000-0000-0000-000000000202', '00000000-0000-0000-0000-000000000702', '00000000-0000-0000-0000-000000000901', 8, 0),
-('00000000-0000-0000-0000-000000000202', '00000000-0000-0000-0000-000000000702', '00000000-0000-0000-0000-000000000902', 4, 0)
-ON CONFLICT (BranchID, VariantID, ChannelID) DO NOTHING;
 
--- CUSTOMER
-INSERT INTO CUSTOMER (CustomerID, FullName, PhoneNumber, Email, Gender, LoyaltyPoints, TotalSpent, Status) VALUES
-('00000000-0000-0000-0000-000000001101', 'Nguyễn Thị Hoa', '0901234567', 'hoa@example.local', 'female', 0, 0, 'active')
-ON CONFLICT (CustomerID) DO NOTHING;
 
--- ORDER + DETAIL
-INSERT INTO ORDERS (
-    OrderID, ChannelID, BranchID, CustomerID, CreatedBy,
-    OrderStatus, PaymentStatus, DiscountAmount, ShippingFee, Note
-) VALUES
-('00000000-0000-0000-0000-000000001201',
- '00000000-0000-0000-0000-000000000901',
- '00000000-0000-0000-0000-000000000202',
- '00000000-0000-0000-0000-000000001101',
- '00000000-0000-0000-0000-000000000303',
- 'new',
- 'paid',
- 0,
- 0,
- 'Đơn hàng mẫu để kiểm thử sp_confirm_order')
-ON CONFLICT (OrderID) DO NOTHING;
+-- 12. Hình ảnh sản phẩm và biến thể
 
-INSERT INTO ORDER_DETAIL (OrderID, VariantID, Quantity, UnitPrice) VALUES
-('00000000-0000-0000-0000-000000001201', '00000000-0000-0000-0000-000000000701', 2, 350000)
-ON CONFLICT (OrderID, VariantID) DO NOTHING;
+INSERT INTO PRODUCT_IMAGE (ImageID, ProductID, VariantID, ImageURL, AltText, SortOrder) VALUES
+    ('4b3be16c-ec6a-53b5-828d-c34e5962dc78', 'a6ec9085-fec2-5f88-88eb-8f67c81a1d80', NULL, 'https://media.routine.vn/1200x1500/prod/variant/10s25tss026-white-alyssum-6-j...', 'Áo Thun Nam Tay Ngắn Cotton Cổ V Phối Viền In Chữ', 0),
+    ('19d5270c-93b2-5f59-a6eb-b58d2bdcf46e', 'a6ec9085-fec2-5f88-88eb-8f67c81a1d80', NULL, 'https://media.routine.vn/1200x1500/prod/variant/10s25tss026-night-sky-1-jpg-p...', 'Áo Thun Nam Tay Ngắn Cotton Cổ V Phối Viền In Chữ', 0),
+    ('243fbb8c-2c6e-58ef-899d-713af309ed63', '21f660f3-2b92-549f-8cb7-73d573e56821', NULL, 'https://media.routine.vn/1200x1500/prod/variant/10s26tssw046-white-1-jpg-6cqd...', 'Áo thun tay ngắn nữ S.cafe . Regular', 0),
+    ('909af9b3-ac30-5c73-a623-7e1fb72cf827', '21f660f3-2b92-549f-8cb7-73d573e56821', NULL, 'https://media.routine.vn/1200x1500/prod/variant/10s26tssw046-dark-black-beaut...', 'Áo thun tay ngắn nữ S.cafe . Regular', 0),
+    ('60eb51a5-701c-5c2b-8796-d60ab19ec150', '027eb8c6-72f2-59be-975e-b3c791a7b270', NULL, 'https://media.routine.vn/1200x1500/prod/product/10s25shl005-shadow-grey-1-jpg...', 'Áo sơ mi Smartshirt cổ gài tay dài Oxford. Fitted', 0),
+    ('75eb9f36-c3ef-5ed1-b34a-4a386d621505', 'e85e6eb0-07a5-57d5-add7-e81426cac50c', NULL, 'https://media.routine.vn/1200x1500/prod/variant/10f25dpa025-moonstruck-4-jpg-...', 'Quần Denim Dài Nam Dáng Ôm Form Regular', 0),
+    ('14bcd62d-eca5-5145-be27-8ee610762197', 'e85e6eb0-07a5-57d5-add7-e81426cac50c', NULL, 'https://media.routine.vn/1200x1500/prod/variant/10f25dpa025-beige-1-jpg-h615....', 'Quần Denim Dài Nam Dáng Ôm Form Regular', 0),
+    ('d7f10b3c-4149-5cc9-88b5-58e4f51ae668', '4ff71aea-75f8-54e1-92c4-3913ab1b0bd2', NULL, 'https://media.routine.vn/1200x1500/prod/variant/10f25skiw020-white-1-jpg-svlh...', 'Chân Váy Nữ Dài Lai Tưa Linen Cotton Form A Line', 0),
+    ('bcab42e4-9d98-5ba1-9705-897a26cc21a7', '4ff71aea-75f8-54e1-92c4-3913ab1b0bd2', NULL, 'https://media.routine.vn/1200x1500/prod/variant/10f25skiw020-brown-3-jpg-q417...', 'Chân Váy Nữ Dài Lai Tưa Linen Cotton Form A Line', 0),
+    ('c2083052-6649-5342-8ffb-4b14b8b523b6', '7de1508b-a834-5d00-a7bf-1122fbf05236', NULL, 'https://media.routine.vn/1200x1500/prod/variant/10f24ves010-black-ao-ves-nam-...', 'Áo Blazer Nam Dệt Jacquard Đột Chỉ Form Fitted', 0),
+    ('4f307900-4280-54e8-936d-0f52819cdf6f', '7de1508b-a834-5d00-a7bf-1122fbf05236', NULL, 'https://media.routine.vn/1200x1500/prod/variant/10f23ves010-wind-chime-ao-ves...', 'Áo Blazer Nam Dệt Jacquard Đột Chỉ Form Fitted', 0),
+    ('74eba22d-5844-5060-be03-77fd889e18a8', '7de1508b-a834-5d00-a7bf-1122fbf05236', NULL, 'https://media.routine.vn/1200x1500/prod/variant/10f24ves010-grey-melange-ao-v...', 'Áo Blazer Nam Dệt Jacquard Đột Chỉ Form Fitted', 0),
+    ('06b04d09-dfe3-524d-aa5d-8c589c8519bb', 'a0b8e921-aa3c-5130-a726-34b827d10e30', NULL, 'https://media.routine.vn/1200x1500/prod/variant/10s26psh008-black-1-jpg-cxj6....', 'Quần Short Nam Túi Hộp Cargo Form Straight', 0),
+    ('787e52f8-891b-57e5-ab86-2d79caa9940f', 'a0b8e921-aa3c-5130-a726-34b827d10e30', NULL, 'https://media.routine.vn/1200x1500/prod/variant/10s26psh008-brown-1-jpg-r7f5....', 'Quần Short Nam Túi Hộp Cargo Form Straight', 0),
+    ('87582242-80c9-5769-86ee-950e2930eabc', 'f5c53c05-5d71-593c-a098-11d720745186', NULL, 'https://media.routine.vn/1200x1500/prod/media/10s25ttow001-brown-ao-tanktop-n...', 'Áo tanktop Slimme.Fitted', 0),
+    ('eb592e2a-7ee6-53b6-aa7a-ad66b30fba13', 'f5c53c05-5d71-593c-a098-11d720745186', NULL, 'https://media.routine.vn/1200x1500/prod/variant/10s25ttow001-pink-1-jpg-v4oq....', 'Áo tanktop Slimme.Fitted', 0),
+    ('cf0addc7-b77d-5cde-9ec4-40366b1c9d8d', 'f5c53c05-5d71-593c-a098-11d720745186', NULL, 'https://media.routine.vn/1200x1500/prod/media/10s25ttow001-dark-sapphire-ao-t...', 'Áo tanktop Slimme.Fitted', 0),
+    ('84b8a3de-52fc-5e15-ab25-44de1128497b', 'f5c53c05-5d71-593c-a098-11d720745186', NULL, 'https://media.routine.vn/1200x1500/prod/product/10s25ttow001-green-3-jpg-8g9s...', 'Áo tanktop Slimme.Fitted', 0),
+    ('a0cf4027-c843-5ac0-bd8f-28ea3fc3f8df', 'caa7d67b-31b8-5347-885e-cebf11003805', NULL, 'https://media.routine.vn/1200x1500/prod/variant/10f25dja007-indigo-8-jpg-lqyu...', 'Áo Khoác Denim Nam Nhãn Vải ROUTINE Form Loose', 0),
+    ('e813dd9d-9ff1-54d2-84df-0dc628c37fb1', '226c4605-4727-537d-b94f-74eedfed1b87', NULL, 'https://media.routine.vn/1200x1500/prod/variant/10s26kniw016-red-1-jpg-zq2q.webp', 'Áo dệt kim tay ngắn nữ cổ polo. Regular', 0),
+    ('dce3e446-d051-53a8-9a49-2cccb328c6d1', '226c4605-4727-537d-b94f-74eedfed1b87', NULL, 'https://media.routine.vn/1200x1500/prod/variant/10s26kniw016-pink-1-jpg-m2vw....', 'Áo dệt kim tay ngắn nữ cổ polo. Regular', 0),
+    ('bda36038-4360-56cd-92ee-51c901aa9827', '226c4605-4727-537d-b94f-74eedfed1b87', NULL, 'https://media.routine.vn/1200x1500/prod/variant/10s26kniw016-off-white-1-jpg-...', 'Áo dệt kim tay ngắn nữ cổ polo. Regular', 0),
+    ('8515fd1c-2714-500b-872f-0f4146b19f7f', '226c4605-4727-537d-b94f-74eedfed1b87', NULL, 'https://media.routine.vn/1200x1500/prod/variant/10s26kniw016-red-1-jpg-9qrj.webp', 'Áo dệt kim tay ngắn nữ cổ polo. Regular', 0),
+    ('1e948e1a-f919-581a-ac9b-e6365f1f9834', '4b63ba89-176e-5aa4-a125-1d0bdeb64c1a', NULL, 'https://media.routine.vn/1200x1500/prod/variant/10f25drew003-black-1-jpg-9kv7...', 'Đầm thun Slimme cổ V phối viền.Fitted', 0),
+    ('1a2cf94b-cf21-5a89-a869-b8e4d87d62a4', '4b63ba89-176e-5aa4-a125-1d0bdeb64c1a', NULL, 'https://media.routine.vn/1200x1500/prod/variant/10f25drew003-grey-4-jpg-e8e2....', 'Đầm thun Slimme cổ V phối viền.Fitted', 0),
+    ('5569633b-a240-5091-bdc5-6bdb33413cde', '6c0bf7ca-d0ec-586c-9fc7-a6b7e06ea46a', NULL, 'https://media.routine.vn/1200x1500/prod/variant/10s26tss042-black-4-jpg-mad3....', 'Áo thun tay ngắn nam Scafe thêu. Boxy', 0),
+    ('eb75f1b2-6051-59c3-9f52-23b0f87f6720', '6c0bf7ca-d0ec-586c-9fc7-a6b7e06ea46a', NULL, 'https://media.routine.vn/1200x1500/prod/variant/10s26tss042-white-white-2-jpg...', 'Áo thun tay ngắn nam Scafe thêu. Boxy', 0),
+    ('39a3d744-efc8-579f-9b5e-f05ab898d344', '6c0bf7ca-d0ec-586c-9fc7-a6b7e06ea46a', NULL, 'https://media.routine.vn/1200x1500/prod/variant/10s26tss042-black-red-1-jpg-h...', 'Áo thun tay ngắn nam Scafe thêu. Boxy', 0),
+    ('a7445359-4738-5c8b-8c26-dbd8b6311a63', '6c0bf7ca-d0ec-586c-9fc7-a6b7e06ea46a', NULL, 'https://media.routine.vn/1200x1500/prod/variant/10s26tss042-white-red-1-jpg-7...', 'Áo thun tay ngắn nam Scafe thêu. Boxy', 0),
+    ('0584a741-8318-5d80-bc65-d5ee6bfb0116', '3b4a5c69-3f5a-5146-b07a-fcf494fd20f7', NULL, 'https://media.routine.vn/1200x1500/prod/media/10F23PKNU001_CAPPUCCINO_quan-un...', 'Quần nỉ jogger unisex gân phía trước', 0),
+    ('b4e3182c-1c40-5274-818d-6a67b32233e6', 'a6ec9085-fec2-5f88-88eb-8f67c81a1d80', '66fb4116-aa2e-5b46-8821-b651835fd5de', 'https://media.routine.vn/1200x1500/prod/variant/10s25tss026-white-alyssum-1-j...', 'Áo Thun Nam Tay Ngắn Cotton Cổ V Phối Viền In Chữ - WHITE ALYSSUM - XL', 1),
+    ('7d260f77-ec17-53ac-b831-10a61182a972', 'a6ec9085-fec2-5f88-88eb-8f67c81a1d80', 'dd2fcc3f-5962-5f64-be70-23db4e30e00c', 'https://media.routine.vn/1200x1500/prod/variant/10s25tss026-white-alyssum-1-j...', 'Áo Thun Nam Tay Ngắn Cotton Cổ V Phối Viền In Chữ - WHITE ALYSSUM - L', 1),
+    ('51c449cc-9435-5234-a7ed-f6066293e9af', 'a6ec9085-fec2-5f88-88eb-8f67c81a1d80', '1ae64a6d-0194-5030-95d3-8a50c9211953', 'https://media.routine.vn/1200x1500/prod/variant/10s25tss026-night-sky-1-jpg-p...', 'Áo Thun Nam Tay Ngắn Cotton Cổ V Phối Viền In Chữ - NIGHT SKY - L', 1),
+    ('ea8e3ff1-d21b-5501-8fec-5a07a23d6b2c', 'a6ec9085-fec2-5f88-88eb-8f67c81a1d80', '25ce8630-4638-5010-8dba-1ef1747822e5', 'https://media.routine.vn/1200x1500/prod/variant/10s25tss026-night-sky-1-jpg-p...', 'Áo Thun Nam Tay Ngắn Cotton Cổ V Phối Viền In Chữ - NIGHT SKY - M', 1),
+    ('1b4ba31b-42bb-5b9f-8e19-4100cbabfbb1', '21f660f3-2b92-549f-8cb7-73d573e56821', '47953b57-5311-5682-a202-cf128d6ff8bb', 'https://media.routine.vn/1200x1500/prod/variant/10s26tssw046-white-2-jpg-iuec...', 'Áo thun tay ngắn nữ S.cafe . Regular - SNOW WHITE - M', 1),
+    ('7f885862-f11c-54eb-a06d-56c81dc946dd', '21f660f3-2b92-549f-8cb7-73d573e56821', '319146fc-4bd3-54f0-a82f-310fadde1369', 'https://media.routine.vn/1200x1500/prod/variant/10s26tssw046-white-2-jpg-iuec...', 'Áo thun tay ngắn nữ S.cafe . Regular - SNOW WHITE - XL', 1),
+    ('d4d1ec3d-076f-591e-bbbc-2a1c2c8c92cf', '21f660f3-2b92-549f-8cb7-73d573e56821', '77c0943b-b938-51f7-b8ec-01a7a6dccfe8', 'https://media.routine.vn/1200x1500/prod/variant/10s26tssw046-black-1-jpg-tddb...', 'Áo thun tay ngắn nữ S.cafe . Regular - BLACK - S', 1),
+    ('0f442df3-c29f-580f-8eb9-deebfb8f4fe5', '21f660f3-2b92-549f-8cb7-73d573e56821', '7ac2cc8d-86f2-5fba-aa0d-c6d46f70efae', 'https://media.routine.vn/1200x1500/prod/variant/10s26tssw046-black-1-jpg-tddb...', 'Áo thun tay ngắn nữ S.cafe . Regular - BLACK - XL', 1),
+    ('116597e7-b5f2-5642-ab15-d02c3d81379c', '027eb8c6-72f2-59be-975e-b3c791a7b270', '2efe467a-59e9-5d86-942a-778dd09a7ef3', 'https://media.routine.vn/1200x1500/prod/product/10s25shl005-shadow-grey-2-jpg...', 'Áo sơ mi Smartshirt cổ gài tay dài Oxford. Fitted - SHADOW GRAY - XL', 1),
+    ('196279e7-2f37-57ea-a856-c46da612ca81', '027eb8c6-72f2-59be-975e-b3c791a7b270', '46cabb7b-ed52-5385-9fb4-c5500a9bc30e', 'https://media.routine.vn/1200x1500/prod/product/10s25shl005-shadow-grey-2-jpg...', 'Áo sơ mi Smartshirt cổ gài tay dài Oxford. Fitted - SHADOW GRAY - M', 1),
+    ('15b2c12c-896d-515f-9373-af5ae57676df', '027eb8c6-72f2-59be-975e-b3c791a7b270', '3c395bcb-ff58-5fb9-a82f-6f85ad4415f9', 'https://media.routine.vn/1200x1500/prod/product/10s25shl005-shadow-grey-2-jpg...', 'Áo sơ mi Smartshirt cổ gài tay dài Oxford. Fitted - SHADOW GRAY - XXL', 1),
+    ('d703d8b7-f414-5036-9223-96af2cd1f543', '027eb8c6-72f2-59be-975e-b3c791a7b270', 'c0545b67-041c-5e19-8558-587ab938bc36', 'https://media.routine.vn/1200x1500/prod/product/10s25shl005-shadow-grey-2-jpg...', 'Áo sơ mi Smartshirt cổ gài tay dài Oxford. Fitted - SHADOW GRAY - L', 1),
+    ('9010cb37-c5c6-5989-bfdb-ab3a6ae48ec3', 'e85e6eb0-07a5-57d5-add7-e81426cac50c', '323f117a-8ea6-5d8b-9b38-67f0d5945aa4', 'https://media.routine.vn/1200x1500/prod/variant/10f25dpa025-moonstruck-1-jpg-...', 'Quần Denim Dài Nam Dáng Ôm Form Regular - MOONSTRUCK - 30.0', 1),
+    ('3adaa642-3a14-5039-b27a-952537e2e148', 'e85e6eb0-07a5-57d5-add7-e81426cac50c', 'cdc12fd4-b4fe-55b4-969d-7a54fa746301', 'https://media.routine.vn/1200x1500/prod/variant/10f25dpa025-moonstruck-1-jpg-...', 'Quần Denim Dài Nam Dáng Ôm Form Regular - MOONSTRUCK - 31.0', 1),
+    ('1f6bb5be-e956-584c-8a5b-2fe6594e3eca', 'e85e6eb0-07a5-57d5-add7-e81426cac50c', '6643155c-0f91-525b-8b6f-3fcb687e937c', 'https://media.routine.vn/1200x1500/prod/variant/10f25dpa025-moonstruck-1-jpg-...', 'Quần Denim Dài Nam Dáng Ôm Form Regular - MOONSTRUCK - 32.0', 1),
+    ('ebb9c79f-9160-540d-8120-90fd85f56dd6', 'e85e6eb0-07a5-57d5-add7-e81426cac50c', '3c967e91-c3fb-5762-9fe1-ef25f167f060', 'https://media.routine.vn/1200x1500/prod/variant/10f25dpa025-beige-2-jpg-5k4q....', 'Quần Denim Dài Nam Dáng Ôm Form Regular - BEIGE - 30.0', 1),
+    ('09724f4a-53e2-5ec0-80c3-7945ceaeff86', '4ff71aea-75f8-54e1-92c4-3913ab1b0bd2', '677a14ba-62df-52f1-a395-07d35f2a537f', 'https://media.routine.vn/1200x1500/prod/variant/10f25skiw020-white-2-jpg-o18q...', 'Chân Váy Nữ Dài Lai Tưa Linen Cotton Form A Line - OFF WHITE - XS', 1),
+    ('bf255128-094d-5d1f-b927-195dfe7e865d', '4ff71aea-75f8-54e1-92c4-3913ab1b0bd2', 'a98a0ae4-f04b-599c-a8a8-f684956a8fd7', 'https://media.routine.vn/1200x1500/prod/variant/10f25skiw020-white-2-jpg-o18q...', 'Chân Váy Nữ Dài Lai Tưa Linen Cotton Form A Line - OFF WHITE - S', 1),
+    ('f029253a-3b74-5691-bea5-aaa23183dedf', '4ff71aea-75f8-54e1-92c4-3913ab1b0bd2', 'cc0bd79f-b0a7-5707-b09b-cf81d3e4dca3', 'https://media.routine.vn/1200x1500/prod/variant/10f25skiw020-brown-2-jpg-s12x...', 'Chân Váy Nữ Dài Lai Tưa Linen Cotton Form A Line - BROWN - S', 1),
+    ('5ff77fad-c4be-596e-883d-cff452e10308', '4ff71aea-75f8-54e1-92c4-3913ab1b0bd2', 'fa27dc79-3374-5f58-974a-bb02998d42a8', 'https://media.routine.vn/1200x1500/prod/variant/10f25skiw020-brown-2-jpg-s12x...', 'Chân Váy Nữ Dài Lai Tưa Linen Cotton Form A Line - BROWN - L', 1),
+    ('205b209a-1211-5436-820a-e8f389635d20', '7de1508b-a834-5d00-a7bf-1122fbf05236', '1d9499a5-c2f9-50f8-bec4-4c1e79bf3d1b', 'https://media.routine.vn/1200x1500/prod/variant/10f24ves010-black-ao-ves-nam-...', 'Áo Blazer Nam Dệt Jacquard Đột Chỉ Form Fitted - BLACK - S', 1),
+    ('9a7009f1-66f6-532a-9aeb-2da2f928ee88', '7de1508b-a834-5d00-a7bf-1122fbf05236', '6c0c1ed8-6f18-5115-b078-8fe5a60d16ab', 'https://media.routine.vn/1200x1500/prod/variant/10f23ves010-wind-chime-ao-ves...', 'Áo Blazer Nam Dệt Jacquard Đột Chỉ Form Fitted - WIND CHIME - L', 1),
+    ('f88aa17b-395b-54fd-b79d-ad2dd1617f75', '7de1508b-a834-5d00-a7bf-1122fbf05236', '08517b28-ad84-51ac-87e1-eddb3b3ebe77', 'https://media.routine.vn/1200x1500/prod/variant/10f24ves010-grey-melange-ao-v...', 'Áo Blazer Nam Dệt Jacquard Đột Chỉ Form Fitted - GREY - S', 1),
+    ('2c2e7677-e8ca-5f9e-8132-c05ad4278edc', '7de1508b-a834-5d00-a7bf-1122fbf05236', '3ac92503-b0d7-562b-8aaa-709a7da9087c', 'https://media.routine.vn/1200x1500/prod/variant/10f24ves010-grey-melange-ao-v...', 'Áo Blazer Nam Dệt Jacquard Đột Chỉ Form Fitted - GREY - XL', 1),
+    ('5c2b0ce8-c20a-553f-beb7-18d70cf212f7', 'a0b8e921-aa3c-5130-a726-34b827d10e30', '29a45a4d-bd6d-5bac-9341-ecc1a02f8f7a', 'https://media.routine.vn/1200x1500/prod/variant/10s26psh008-black-1-jpg-1tll....', 'Quần Short Nam Túi Hộp Cargo Form Straight - BLACK - 29.0', 1),
+    ('ff673e15-50d4-5663-bf60-91a48f89a403', 'a0b8e921-aa3c-5130-a726-34b827d10e30', 'e81e0dad-a748-5597-84fa-83212b3b104e', 'https://media.routine.vn/1200x1500/prod/variant/10s26psh008-black-1-jpg-1tll....', 'Quần Short Nam Túi Hộp Cargo Form Straight - BLACK - 32.0', 1),
+    ('e55084b3-c525-5d11-a3f5-230f1307c99c', 'a0b8e921-aa3c-5130-a726-34b827d10e30', 'dfa677da-4a88-5576-8e7f-628198cc474d', 'https://media.routine.vn/1200x1500/prod/variant/10s26psh008-brown-3-jpg-bmnr....', 'Quần Short Nam Túi Hộp Cargo Form Straight - BROWN - 32.0', 1),
+    ('2f82a257-378c-5eca-a521-684b72b20d51', 'a0b8e921-aa3c-5130-a726-34b827d10e30', 'e5f9f658-7282-56f7-8f2e-dc823fbb9adc', 'https://media.routine.vn/1200x1500/prod/variant/10s26psh008-brown-3-jpg-bmnr....', 'Quần Short Nam Túi Hộp Cargo Form Straight - BROWN - 30.0', 1),
+    ('0219b5cc-32b4-59f1-9d83-8992759269f7', 'f5c53c05-5d71-593c-a098-11d720745186', 'e9dc41d7-3625-5772-a5e5-3da4bbbe4a3c', 'https://media.routine.vn/1200x1500/prod/media/10s25ttow001-brown-ao-tanktop-n...', 'Áo tanktop Slimme.Fitted - BROWN - M', 1),
+    ('1121ff09-74ec-5afd-8c3c-d5a632991090', 'f5c53c05-5d71-593c-a098-11d720745186', '8d6ee57f-6793-58b5-9c26-39c6839a032d', 'https://media.routine.vn/1200x1500/prod/variant/10s25ttow001-pink-2-jpg-nwac....', 'Áo tanktop Slimme.Fitted - PINK - M', 1),
+    ('97d7ce3e-0a33-59c8-8dea-cf23abdfe07e', 'f5c53c05-5d71-593c-a098-11d720745186', '93793ab2-caf9-5053-8356-3c41f4bccb22', 'https://media.routine.vn/1200x1500/prod/media/10s25ttow001-dark-sapphire-ao-t...', 'Áo tanktop Slimme.Fitted - DARK SAPPHIRE - M', 1),
+    ('64cfd078-0096-5420-8ac2-7308fb9c9778', 'f5c53c05-5d71-593c-a098-11d720745186', 'fe054901-6486-54ce-89b5-4e90cd4daf25', 'https://media.routine.vn/1200x1500/prod/media/10s25ttow001-celadon-ao-tanktop...', 'Áo tanktop Slimme.Fitted - CELADON GREEN - M', 1),
+    ('518a7e00-9cf6-537e-9fe2-b15453148a61', 'caa7d67b-31b8-5347-885e-cebf11003805', '4d6e66c1-5243-5ff6-a452-2a55d6756675', 'https://media.routine.vn/1200x1500/prod/variant/10f25dja007-navy-1-jpg-qnbn.webp', 'Áo Khoác Denim Nam Nhãn Vải ROUTINE Form Loose - M/INDIGO - S', 1),
+    ('691e9517-793e-5c2a-8049-fc233ce4b7b2', 'caa7d67b-31b8-5347-885e-cebf11003805', '567d78a5-d37c-57e4-ad11-ce37183a4508', 'https://media.routine.vn/1200x1500/prod/variant/10f25dja007-navy-1-jpg-qnbn.webp', 'Áo Khoác Denim Nam Nhãn Vải ROUTINE Form Loose - M/INDIGO - M', 1),
+    ('51c0b053-9113-5ddd-833f-222cffda63f2', 'caa7d67b-31b8-5347-885e-cebf11003805', '7961677a-2db1-5cf9-a777-c12fec5a0846', 'https://media.routine.vn/1200x1500/prod/variant/10f25dja007-navy-1-jpg-qnbn.webp', 'Áo Khoác Denim Nam Nhãn Vải ROUTINE Form Loose - M/INDIGO - L', 1),
+    ('49d7df42-c427-5e7a-8e24-37a18eda9fb7', 'caa7d67b-31b8-5347-885e-cebf11003805', 'e6a48fd8-ba0b-5822-a4b9-e364a11350d2', 'https://media.routine.vn/1200x1500/prod/variant/10f25dja007-navy-1-jpg-qnbn.webp', 'Áo Khoác Denim Nam Nhãn Vải ROUTINE Form Loose - M/INDIGO - XL', 1),
+    ('aea02aea-4202-5b40-8741-74650e0bc191', '226c4605-4727-537d-b94f-74eedfed1b87', 'ccc54f76-17b4-5e7d-88e5-8b2638278a0c', 'https://media.routine.vn/1200x1500/prod/variant/10s26kniw016-red-1-jpg-9qrj.webp', 'Áo dệt kim tay ngắn nữ cổ polo. Regular - RED - XL', 1),
+    ('9b79a522-0dbd-539e-bb1a-7a957f7304a4', '226c4605-4727-537d-b94f-74eedfed1b87', 'd5f328c8-bff2-555f-8e97-0b89b5088ea0', 'https://media.routine.vn/1200x1500/prod/variant/10s26kniw016-pink-2-jpg-h5n4....', 'Áo dệt kim tay ngắn nữ cổ polo. Regular - PINK - XL', 1),
+    ('66368d8b-e20a-56bf-be85-b3738ab9e034', '226c4605-4727-537d-b94f-74eedfed1b87', '4aa67b9c-d40a-5555-b176-50909617a5ee', 'https://media.routine.vn/1200x1500/prod/variant/10s26kniw016-off-white-2-jpg-...', 'Áo dệt kim tay ngắn nữ cổ polo. Regular - OFF WHITE - L', 1),
+    ('ecbc4bd1-8265-52dd-83ef-5790b13bda00', '226c4605-4727-537d-b94f-74eedfed1b87', '6d195bd5-a790-5e27-b806-3876bbdef442', 'https://media.routine.vn/1200x1500/prod/variant/10s26kniw016-red-2-jpg-fqsh.webp', 'Áo dệt kim tay ngắn nữ cổ polo. Regular - RED - S', 1),
+    ('e9751ee7-3f7e-525a-9edc-aee90c257143', '4b63ba89-176e-5aa4-a125-1d0bdeb64c1a', 'e9d73401-d6ef-564d-a08f-d1b23138f241', 'https://media.routine.vn/1200x1500/prod/variant/10f25drew003-black-2-jpg-yrj1...', 'Đầm thun Slimme cổ V phối viền.Fitted - BLACK - XS', 1),
+    ('7532d00e-cbcf-53d0-9953-5a52438f580a', '4b63ba89-176e-5aa4-a125-1d0bdeb64c1a', '2ce11265-d9e0-5d32-b2b5-ff52cb2acf9f', 'https://media.routine.vn/1200x1500/prod/variant/10f25drew003-black-2-jpg-yrj1...', 'Đầm thun Slimme cổ V phối viền.Fitted - BLACK - S', 1),
+    ('36a5e8b1-3f1d-5d74-a778-5e24caec4b7f', '4b63ba89-176e-5aa4-a125-1d0bdeb64c1a', '7dc84db0-7b0c-55d6-a61c-41699d2e20e4', 'https://media.routine.vn/1200x1500/prod/variant/10f25drew003-grey-melange-2-j...', 'Đầm thun Slimme cổ V phối viền.Fitted - GRAY MELANGE - S', 1),
+    ('68ae51d6-1720-54fa-bc3d-9652a87c372a', '4b63ba89-176e-5aa4-a125-1d0bdeb64c1a', 'e88a359d-1441-57f9-bc05-a6828b45d138', 'https://media.routine.vn/1200x1500/prod/variant/10f25drew003-grey-melange-2-j...', 'Đầm thun Slimme cổ V phối viền.Fitted - GRAY MELANGE - M', 1),
+    ('f8b78424-6b18-5a39-a582-02baa67a30e4', '6c0bf7ca-d0ec-586c-9fc7-a6b7e06ea46a', 'b87675c7-332e-5523-b30b-85b2b8dba49c', 'https://media.routine.vn/1200x1500/prod/variant/10s26tss042-black-3-jpg-8y1i....', 'Áo thun tay ngắn nam Scafe thêu. Boxy - BLACK/BLACK - L', 1),
+    ('4f6a9be7-34f0-5081-9167-f0ebf5698218', '6c0bf7ca-d0ec-586c-9fc7-a6b7e06ea46a', 'e4dfede1-0c37-5676-a81f-c27d17a55aa6', 'https://media.routine.vn/1200x1500/prod/variant/10s26tss042-tnt-white-1-jpg-z...', 'Áo thun tay ngắn nam Scafe thêu. Boxy - WHITE/WHITE - M', 1),
+    ('c6bcad89-5878-5c17-ab62-37817a706c30', '6c0bf7ca-d0ec-586c-9fc7-a6b7e06ea46a', '1c4fe18f-6b9b-5f8d-8999-cec34ecb9634', 'https://media.routine.vn/1200x1500/prod/variant/10s26tss042-black-1-jpg-zip5....', 'Áo thun tay ngắn nam Scafe thêu. Boxy - BLACK/RED - M', 1),
+    ('bfbc79a4-1823-5976-9e7c-fb1a3b61c18e', '6c0bf7ca-d0ec-586c-9fc7-a6b7e06ea46a', 'f5f40e2f-ea3d-5c1e-ad6a-0e0477d106dd', 'https://media.routine.vn/1200x1500/prod/variant/10s26tss042-1-jpg-fje9.webp', 'Áo thun tay ngắn nam Scafe thêu. Boxy - WHITE/RED - M', 1),
+    ('2b22503c-e8c1-518a-b586-f1d5b737885c', '3b4a5c69-3f5a-5146-b07a-fcf494fd20f7', 'ab0218c8-c6c9-567a-88c8-dc23b01d25c2', 'https://media.routine.vn/1200x1500/prod/media/10F23PKNU001_CAPPUCCINO_quan-un...', 'Quần nỉ jogger unisex gân phía trước - CAPPUCCINO - L', 1),
+    ('2e374936-8037-5499-aae1-ee15e971614c', '3b4a5c69-3f5a-5146-b07a-fcf494fd20f7', 'da7e4f0e-d2fe-5687-b333-f5dc1c2bf853', 'https://media.routine.vn/1200x1500/prod/media/10F23PKNU001_CAPPUCCINO_quan-un...', 'Quần nỉ jogger unisex gân phía trước - CAPPUCCINO - XL', 1)
+ON CONFLICT (ImageID) DO UPDATE SET ImageURL = EXCLUDED.ImageURL, AltText = EXCLUDED.AltText, SortOrder = EXCLUDED.SortOrder;
 
-INSERT INTO PAYMENT (PaymentID, OrderID, Method, Amount, Status, PaidAt) VALUES
-('00000000-0000-0000-0000-000000001301',
- '00000000-0000-0000-0000-000000001201',
- 'cash',
- 700000,
- 'success',
- NOW())
-ON CONFLICT (PaymentID) DO NOTHING;
-
--- PURCHASE ORDER
-INSERT INTO PURCHASE_ORDER (
-    PurchaseOrderID, SupplierID, BranchID, CreatedBy, ExpectedDate, Status, Note
-) VALUES
-('00000000-0000-0000-0000-000000001401',
- '00000000-0000-0000-0000-000000000801',
- '00000000-0000-0000-0000-000000000201',
- '00000000-0000-0000-0000-000000000302',
- CURRENT_DATE + INTERVAL '7 days',
- 'approved',
- 'Phiếu nhập mẫu')
-ON CONFLICT (PurchaseOrderID) DO NOTHING;
-
-INSERT INTO PURCHASE_ORDER_DETAIL (
-    PurchaseOrderID, VariantID, RequestedQuantity, ReceivedQuantity, UnitPrice
-) VALUES
-('00000000-0000-0000-0000-000000001401', '00000000-0000-0000-0000-000000000701', 30, 30, 150000)
-ON CONFLICT (PurchaseOrderID, VariantID) DO NOTHING;
-
--- TRANSFER ORDER
-INSERT INTO TRANSFER_ORDER (
-    TransferID, FromBranchID, ToBranchID, CreatedBy, Status, Note
-) VALUES
-('00000000-0000-0000-0000-000000001501',
- '00000000-0000-0000-0000-000000000201',
- '00000000-0000-0000-0000-000000000202',
- '00000000-0000-0000-0000-000000000302',
- 'approved',
- 'Phiếu chuyển mẫu')
-ON CONFLICT (TransferID) DO NOTHING;
-
-INSERT INTO TRANSFER_ORDER_DETAIL (TransferID, VariantID, RequestedQuantity, ActualQuantity) VALUES
-('00000000-0000-0000-0000-000000001501', '00000000-0000-0000-0000-000000000702', 5, 5)
-ON CONFLICT (TransferID, VariantID) DO NOTHING;
-
--- STOCK ADJUSTMENT
-INSERT INTO STOCK_ADJUSTMENT (AdjustmentID, BranchID, CreatedBy, Status, Note) VALUES
-('00000000-0000-0000-0000-000000001601',
- '00000000-0000-0000-0000-000000000202',
- '00000000-0000-0000-0000-000000000302',
- 'pending_approval',
- 'Phiếu kiểm kho mẫu')
-ON CONFLICT (AdjustmentID) DO NOTHING;
-
-INSERT INTO STOCK_ADJUSTMENT_DETAIL (AdjustmentID, VariantID, SystemQuantity, ActualQuantity) VALUES
-('00000000-0000-0000-0000-000000001601', '00000000-0000-0000-0000-000000000701', 20, 19)
-ON CONFLICT (AdjustmentID, VariantID) DO NOTHING;
