@@ -1,3 +1,5 @@
+-- 4.2.1 procedure xác nhận đơn hàng
+
 CREATE OR REPLACE PROCEDURE sp_confirm_order(p_order_id UUID)
 LANGUAGE plpgsql
 AS $$
@@ -87,6 +89,8 @@ BEGIN
 END;
 $$;
 
+
+-- 4.2.2 Procedure xác nhận phiếu nhập hàng
 CREATE OR REPLACE PROCEDURE sp_confirm_purchase_order(p_purchase_order_id UUID)
 LANGUAGE plpgsql
 AS $$
@@ -160,6 +164,7 @@ BEGIN
 END;
 $$;
 
+-- 4.2.3 Procedure xác nhận chuyển kho
 CREATE OR REPLACE PROCEDURE sp_ship_transfer_order(p_transfer_id UUID)
 LANGUAGE plpgsql
 AS $$
@@ -228,6 +233,7 @@ BEGIN
 END;
 $$;
 
+-- 4.2.4 Procedure xác nhận nhận hàng chuyển kho
 CREATE OR REPLACE PROCEDURE sp_receive_transfer_order(p_transfer_id UUID)
 LANGUAGE plpgsql
 AS $$
@@ -303,6 +309,8 @@ BEGIN
 END;
 $$;
 
+
+-- 4.2.5 Procedure hoàn tất điều chỉnh tồn kho
 CREATE OR REPLACE PROCEDURE sp_complete_stock_adjustment(p_adjustment_id UUID)
 LANGUAGE plpgsql
 AS $$
