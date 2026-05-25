@@ -1,3 +1,5 @@
+-- Enum dùng để giới hạn giá trị của các cột trong bảng, giúp đảm bảo tính nhất quán và dễ dàng quản lý.
+
 DO $$
 BEGIN
     CREATE TYPE record_status AS ENUM ('active', 'inactive');

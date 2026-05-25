@@ -26,4 +26,3 @@ Với Supabase, nên dùng:
 - Supabase Dashboard → Database → Backups
 - Hoặc dùng `pg_dump` với connection string từ Supabase Project Settings
 
-Không đưa file backup có dữ liệu thật lên GitHub public.

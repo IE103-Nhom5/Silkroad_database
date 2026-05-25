@@ -17,4 +17,4 @@
 2. JSONB chỉ dùng cho dữ liệu mở rộng hoặc dữ liệu đến từ nền tảng bên ngoài.
 3. Tồn kho hiện tại và lịch sử biến động tồn kho được tách riêng.
 4. Các bảng giao dịch dùng khóa ngoại và ràng buộc `CHECK` để hạn chế dữ liệu sai.
-5. `ORDERS` và `USERS` được dùng thay cho `ORDER` và `USER` để tránh trùng từ khóa SQL.
+
