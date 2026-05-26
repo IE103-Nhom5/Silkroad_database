@@ -1,3 +1,4 @@
+-- View danh mục sản phẩm và biến thể
 CREATE OR REPLACE VIEW vw_product_variant_catalog AS
 SELECT
     p.ProductID,
@@ -19,6 +20,7 @@ JOIN PRODUCT_CATEGORY pc ON pc.CategoryID = p.CategoryID
 LEFT JOIN ATTRIBUTE size_attr ON size_attr.AttributeID = pv.SizeAttributeID
 LEFT JOIN ATTRIBUTE color_attr ON color_attr.AttributeID = pv.ColorAttributeID;
 
+-- 4.6.1 View tồn kho theo chi nhánh
 CREATE OR REPLACE VIEW vw_stock_by_branch AS
 SELECT
     b.BranchID,
@@ -37,6 +39,7 @@ JOIN BRANCH b ON b.BranchID = s.BranchID
 JOIN PRODUCT_VARIANT pv ON pv.VariantID = s.VariantID
 JOIN PRODUCT p ON p.ProductID = pv.ProductID;
 
+-- View cảnh báo tồn kho thấp
 CREATE OR REPLACE VIEW vw_low_stock_alert AS
 SELECT
     b.BranchName,
@@ -51,6 +54,7 @@ JOIN PRODUCT_VARIANT pv ON pv.VariantID = s.VariantID
 JOIN PRODUCT p ON p.ProductID = pv.ProductID
 WHERE s.Quantity <= s.MinStockLevel;
 
+-- 4.6.2 View báo cáo chi tiết đơn hàng
 CREATE OR REPLACE VIEW vw_order_summary AS
 SELECT
     o.OrderID,
@@ -72,6 +76,7 @@ JOIN BRANCH b ON b.BranchID = o.BranchID
 LEFT JOIN CUSTOMER c ON c.CustomerID = o.CustomerID
 JOIN USERS u ON u.UserID = o.CreatedBy;
 
+-- 4.6.3 View báo cáo doanh thu theo kênh bán hàng
 CREATE OR REPLACE VIEW vw_revenue_by_channel AS
 SELECT
     sc.ChannelID,
@@ -85,6 +90,7 @@ JOIN SALES_CHANNEL sc ON sc.ChannelID = o.ChannelID
 WHERE o.OrderStatus = 'delivered'
 GROUP BY sc.ChannelID, sc.ChannelName, sc.ChannelType;
 
+-- 4.6.4 View báo cáo biến động tồn kho
 CREATE OR REPLACE VIEW vw_stock_movement_report AS
 SELECT
     sh.HistoryID,
