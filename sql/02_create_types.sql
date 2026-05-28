@@ -104,6 +104,19 @@ END $$;
 
 DO $$
 BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM pg_type t
+        JOIN pg_enum e ON e.enumtypid = t.oid
+        WHERE t.typname = 'order_payment_status'
+          AND e.enumlabel = 'partially_refunded'
+    ) THEN
+        ALTER TYPE order_payment_status ADD VALUE 'partially_refunded' AFTER 'paid';
+    END IF;
+END $$;
+
+DO $$
+BEGIN
     CREATE TYPE payment_method AS ENUM ('cash', 'card', 'momo', 'vnpay', 'zalopay', 'bank_transfer');
 EXCEPTION WHEN duplicate_object THEN NULL;
 END $$;
