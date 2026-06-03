@@ -7,3 +7,5 @@
 \i sql/07_create_procedures.sql
 \i sql/08_create_views.sql
 \i sql/09_seed_sample_data.sql
+\i sql/11_create_permissions.sql
+\i sql/12_optimize_database.sql

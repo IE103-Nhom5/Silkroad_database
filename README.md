@@ -22,10 +22,13 @@ silkroad-database/
 │   ├── 08_create_views.sql
 │   ├── 09_seed_sample_data.sql
 │   ├── 10_test_queries.sql
+│   ├── 11_create_permissions.sql
+│   ├── 12_optimize_database.sql
 │   └── run_all.sql
 ├── docs/
 │   ├── database_overview.md
-│   └── github_section_for_report.md
+│   ├── database_optimization_audit.md
+│   └── schema-28-tables.md
 ├── scripts/
 │   └── import_excel_to_postgres.py
 ├── import/
@@ -60,5 +63,15 @@ Kiểm thử nhanh:
 ```bash
 psql -d silkroad -f sql/10_test_queries.sql
 ```
+
+Tối ưu database sau khi schema đã có sẵn:
+
+```bash
+psql -d silkroad -f sql/12_optimize_database.sql
+```
+
+File `12_optimize_database.sql` chỉ thêm extension, index, view và function hỗ trợ đọc dữ liệu nhanh hơn. File này không reset schema và không xóa dữ liệu.
+
+Ghi chú rà soát cursor/index/view nằm ở `docs/database_optimization_audit.md`.
 
 ```
