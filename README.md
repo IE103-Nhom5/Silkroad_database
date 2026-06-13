@@ -24,6 +24,7 @@ silkroad-database/
 │   ├── 10_test_queries.sql
 │   ├── 11_create_permissions.sql
 │   ├── 12_optimize_database.sql
+│   ├── 13_production_security.sql
 │   └── run_all.sql
 ├── docs/
 │   ├── database_overview.md
@@ -36,7 +37,8 @@ silkroad-database/
 ├── backup/
 │   └── backup_restore_guide.md
 ├── supabase/
-│   └── migrations/
+│   ├── migrations/
+│   └── functions/
 ├── .github/
 │   └── workflows/
 ├── .env.example
@@ -71,6 +73,19 @@ psql -d silkroad -f sql/12_optimize_database.sql
 ```
 
 File `12_optimize_database.sql` chỉ thêm extension, index, view và function hỗ trợ đọc dữ liệu nhanh hơn. File này không reset schema và không xóa dữ liệu.
+
+File `13_production_security.sql` liên kết profile với Supabase Auth, loại bỏ password giả khỏi bảng công khai, thêm audit log, RLS và các RPC transaction dùng cho frontend production.
+
+Deploy Edge Functions sau khi cấu hình Supabase project:
+
+```bash
+supabase functions deploy admin-invite-user
+supabase functions deploy admin-update-user-status
+supabase functions deploy import-catalog
+supabase functions deploy gemini-chat
+```
+
+`gemini-chat` chủ động trả trạng thái disabled cho tới khi API secret được cấp và phần xử lý backend được phê duyệt.
 
 Ghi chú rà soát cursor/index/view nằm ở `docs/database_optimization_audit.md`.
 

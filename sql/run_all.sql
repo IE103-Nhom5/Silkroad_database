@@ -9,3 +9,4 @@
 \i sql/09_seed_sample_data.sql
 \i sql/11_create_permissions.sql
 \i sql/12_optimize_database.sql
+\i sql/13_production_security.sql
