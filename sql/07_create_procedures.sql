@@ -539,7 +539,7 @@ BEGIN
                 TransactionID, GatewayRef, PaidAt, CreatedAt
             )
             VALUES (
-                gen_random_uuid(), v_order_id, v_refund_method::payment_method,
+                gen_random_uuid(), v_order_id, v_refund_method::TEXT::payment_method,
                 v_refund_amount, 'refunded',
                 'RETURN-' || p_return_id::TEXT,
                 jsonb_build_object('return_id', p_return_id, 'source', 'return_order'),
