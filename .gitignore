@@ -24,3 +24,6 @@ Thumbs.db
 # Do not commit real import files with customer/sales data
 import/private/
 backup/private/
+
+# Supabase CLI project-link and update cache
+supabase/.temp/

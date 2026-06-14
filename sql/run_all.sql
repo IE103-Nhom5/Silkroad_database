@@ -10,3 +10,4 @@
 \i sql/11_create_permissions.sql
 \i sql/12_optimize_database.sql
 \i sql/13_production_security.sql
+\i sql/14_auth_profile_and_business_guards.sql
