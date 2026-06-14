@@ -11,3 +11,4 @@
 \i sql/12_optimize_database.sql
 \i sql/13_production_security.sql
 \i sql/14_auth_profile_and_business_guards.sql
+\i sql/15_multichannel_concurrency.sql
