@@ -25,6 +25,9 @@ silkroad-database/
 │   ├── 11_create_permissions.sql
 │   ├── 12_optimize_database.sql
 │   ├── 13_production_security.sql
+│   ├── 14_auth_profile_and_business_guards.sql
+│   ├── 15_multichannel_concurrency.sql
+│   ├── 16_cursor_low_stock_report.sql
 │   └── run_all.sql
 ├── docs/
 │   ├── database_overview.md
@@ -76,6 +79,24 @@ File `12_optimize_database.sql` chỉ thêm extension, index, view và function 
 
 File `13_production_security.sql` liên kết profile với Supabase Auth, loại bỏ password giả khỏi bảng công khai, thêm audit log, RLS và các RPC transaction dùng cho frontend production.
 
+File `16_cursor_low_stock_report.sql` cung cấp PostgreSQL cursor thật để trình bày yêu cầu đồ án. Cursor này chỉ phục vụ báo cáo tồn kho thấp; luồng web vẫn dùng keyset pagination.
+
+Kiểm tra SQL canonical và Supabase migrations không bị lệch:
+
+```bash
+python scripts/check_sql_sync.py
+```
+
+Chạy Supabase local, chỉ áp dụng cho môi trường local/preview:
+
+```bash
+supabase start
+supabase db reset --local
+supabase db reset --local
+supabase migration list --local
+supabase db lint --local
+```
+
 Deploy Edge Functions sau khi cấu hình Supabase project:
 
 ```bash
@@ -88,5 +109,3 @@ supabase functions deploy gemini-chat
 `gemini-chat` chủ động trả trạng thái disabled cho tới khi API secret được cấp và phần xử lý backend được phê duyệt.
 
 Ghi chú rà soát cursor/index/view nằm ở `docs/database_optimization_audit.md`.
-
-```

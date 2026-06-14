@@ -28,7 +28,6 @@ CREATE TABLE IF NOT EXISTS USERS (
     UserID UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     FullName VARCHAR(100) NOT NULL,
     Username VARCHAR(50) UNIQUE NOT NULL,
-    PasswordHash VARCHAR(255) NOT NULL,
     PhoneNumber VARCHAR(15),
     Email VARCHAR(100) UNIQUE,
     RoleID UUID NOT NULL REFERENCES ROLE(RoleID),
@@ -39,7 +38,6 @@ CREATE TABLE IF NOT EXISTS USERS (
     CreatedAt TIMESTAMP NOT NULL DEFAULT NOW(),
     UpdatedAt TIMESTAMP,
 
-    CONSTRAINT chk_password_hash_length CHECK (LENGTH(PasswordHash) >= 20),
     CONSTRAINT chk_failed_login_count CHECK (FailedLoginCount >= 0)
 );
 

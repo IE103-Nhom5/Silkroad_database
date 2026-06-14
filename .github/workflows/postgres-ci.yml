@@ -36,4 +36,7 @@ jobs:
         env:
           PGPASSWORD: postgres
         run: |
+          python scripts/check_sql_sync.py
           psql -h localhost -U postgres -d silkroad -v ON_ERROR_STOP=1 -f sql/run_all.sql
+          psql -h localhost -U postgres -d silkroad -v ON_ERROR_STOP=1 -f sql/run_all.sql
+          psql -h localhost -U postgres -d silkroad -v ON_ERROR_STOP=1 -f sql/10_test_queries.sql

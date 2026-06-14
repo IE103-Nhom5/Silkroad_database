@@ -417,15 +417,54 @@ FROM sample_stock ss,
 LATERAL fn_get_stock_movement(ss.BranchID, ss.VariantID) gsm;
 
 -- 26. Cursor tồn kho thấp
--- Chạy được nếu đã tạo function fn_cursor_low_stock_report().
+-- Dùng PostgreSQL cursor thật trong fn_cursor_low_stock_report_app().
 SELECT
     branch_name,
     sku,
     product_name,
-    quantity,
+    available_quantity,
     min_stock_level,
-    suggested_reorder_qty
-FROM fn_cursor_low_stock_report();
+    suggested_reorder_quantity
+FROM fn_cursor_low_stock_report_app(NULL, 20);
+
+-- 26b. Contract bắt buộc giữa frontend và database
+DO $$
+DECLARE
+    v_missing TEXT[];
+BEGIN
+    SELECT ARRAY_AGG(required_name)
+    INTO v_missing
+    FROM UNNEST(ARRAY[
+        'vw_product_search_catalog',
+        'vw_pos_variant_stock_catalog',
+        'vw_product_variant_catalog',
+        'vw_stock_by_branch',
+        'vw_order_summary',
+        'vw_revenue_by_channel'
+    ]) AS required_name
+    WHERE to_regclass('public.' || required_name) IS NULL;
+
+    IF v_missing IS NOT NULL THEN
+        RAISE EXCEPTION 'Missing required frontend views: %', v_missing;
+    END IF;
+
+    SELECT ARRAY_AGG(required_name)
+    INTO v_missing
+    FROM UNNEST(ARRAY[
+        'fn_create_order_app(jsonb)',
+        'fn_create_purchase_order_app(jsonb)',
+        'fn_create_transfer_app(jsonb)',
+        'fn_create_adjustment_app(jsonb)',
+        'fn_create_return_app(jsonb)',
+        'fn_set_inventory_allocation_app(jsonb)',
+        'fn_cursor_low_stock_report_app(uuid,integer)'
+    ]) AS required_name
+    WHERE to_regprocedure('public.' || required_name) IS NULL;
+
+    IF v_missing IS NOT NULL THEN
+        RAISE EXCEPTION 'Missing required frontend RPC: %', v_missing;
+    END IF;
+END $$;
 
 -- 27. Query hỗ trợ nếu cursor tồn kho thấp không trả dòng nào
 SELECT

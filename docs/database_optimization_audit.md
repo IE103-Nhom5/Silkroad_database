@@ -184,4 +184,4 @@ ANALYZE;
 
 ## Kết luận
 
-Không cần bổ sung cursor tường minh vào các file SQL cũ. Phần đáng tối ưu là đường đọc dữ liệu cho app: index đúng hot path, view gom dữ liệu, RPC cho dashboard và keyset pagination cho bảng lớn.
+Không dùng cursor tường minh cho transaction hoặc pagination của web. Riêng `sql/16_cursor_low_stock_report.sql` dùng `DECLARE CURSOR`, `OPEN`, `FETCH`, `CLOSE` để trình bày yêu cầu đồ án trên báo cáo tồn kho thấp; runtime frontend vẫn dùng keyset pagination.
