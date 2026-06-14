@@ -13,3 +13,4 @@
 \i sql/14_auth_profile_and_business_guards.sql
 \i sql/15_multichannel_concurrency.sql
 \i sql/16_cursor_low_stock_report.sql
+\i sql/17_admin_permission_and_demo_grants.sql
