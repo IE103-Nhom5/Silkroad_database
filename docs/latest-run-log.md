@@ -117,3 +117,34 @@ RPC:
 6. Chạy `supabase migration list --local` và `supabase db lint --local`.
 
 Cho tới khi các bước trên pass, trạng thái database vẫn là **chưa hoàn tất**.
+
+## 2026-06-15 - Đồng bộ quyền admin và nhà cung cấp lên Supabase web
+
+### Thay đổi
+
+- Thêm `sql/18_seed_suppliers.sql` và migration `202606150000_seed_suppliers.sql`.
+- Bổ sung 8 nhà cung cấp hoạt động cho quy trình nhập hàng; script idempotent theo tên nhà cung cấp.
+- Thêm SQL `18` vào `sql/run_all.sql`.
+- Mở rộng `scripts/check_sql_sync.py` để kiểm tra cả migration quyền admin `004` và supplier `202606150000`.
+- Đồng bộ nội dung migration `202606140004_admin_permission_and_demo_grants.sql` với SQL canonical `17`.
+
+### Kết quả kiểm tra và đồng bộ
+
+| Lệnh | Exit code | Kết quả |
+| --- | ---: | --- |
+| `python scripts/check_sql_sync.py` | 0 | Canonical SQL, `run_all.sql` và migrations đồng bộ |
+| `supabase db reset --local` lần 1 | 0 | Pass, migration supplier và seed chạy thành công |
+| `supabase db reset --local` lần 2 | 1 | Migration và seed chạy xong; CLI nhận `502` khi restart container cuối |
+| Truy vấn supplier local | 0 | Tìm thấy đúng 8/8 supplier mới, trạng thái `active` |
+| `supabase db push --dry-run` | 0 | Xác nhận chỉ push migration `004` và `202606150000` |
+| `supabase db push` | 0 | Đã áp dụng hai migration lên Supabase web |
+| `supabase migration list` | 0 | Local và remote đồng bộ tới `202606150000` |
+| Kiểm tra trực tiếp modal Nhập hàng | 0 | Web hiển thị 12 supplier: 4 seed cũ và 8 supplier mới |
+| `git diff --check` | 0 | Pass, chỉ có cảnh báo LF/CRLF |
+
+### Ghi chú
+
+- Không reset database Supabase web.
+- Không tạo phiếu nhập thử hoặc thay đổi tồn kho trên web.
+- Cảnh báo cấp quyền PostGIS khi áp dụng migration `004` không làm migration thất bại.
+- Supabase local vẫn chạy sau lỗi restart `502`; dữ liệu supplier local đã được truy vấn xác nhận.

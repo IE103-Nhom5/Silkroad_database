@@ -31,6 +31,8 @@ INCREMENTAL_PAIRS = {
     "14_auth_profile_and_business_guards.sql": "202606140001_auth_profile_and_business_guards.sql",
     "15_multichannel_concurrency.sql": "202606140002_multichannel_concurrency.sql",
     "16_cursor_low_stock_report.sql": "202606140003_cursor_low_stock_report.sql",
+    "17_admin_permission_and_demo_grants.sql": "202606140004_admin_permission_and_demo_grants.sql",
+    "18_seed_suppliers.sql": "202606150000_seed_suppliers.sql",
 }
 
 REQUIRED_CONTRACT = [

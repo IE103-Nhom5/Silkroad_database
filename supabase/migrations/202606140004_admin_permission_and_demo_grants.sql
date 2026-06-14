@@ -1,4 +1,7 @@
--- Active admin receives full application permissions. Grants do not bypass RLS.
+-- =========================================================
+-- SilkRoad active-admin permission bypass and demo grants
+-- RLS policies and SECURITY DEFINER permission checks remain authoritative.
+-- =========================================================
 
 CREATE OR REPLACE FUNCTION current_app_has_permission(p_permission TEXT)
 RETURNS BOOLEAN
@@ -17,6 +20,8 @@ AS $$
     );
 $$;
 
+-- App purchase flow can explicitly mark quantities received, then atomically
+-- confirm the document through fn_confirm_purchase_order_app.
 CREATE OR REPLACE FUNCTION fn_create_purchase_order_app(p_payload JSONB)
 RETURNS UUID
 LANGUAGE plpgsql
@@ -36,9 +41,13 @@ BEGIN
 
     INSERT INTO PURCHASE_ORDER (PurchaseOrderID, SupplierID, BranchID, CreatedBy, ExpectedDate, Status, Note)
     VALUES (
-        v_id, (p_payload->>'supplier_id')::UUID, (p_payload->>'branch_id')::UUID,
-        current_app_user_id(), COALESCE((p_payload->>'expected_date')::DATE, CURRENT_DATE),
-        'draft', NULLIF(p_payload->>'note', '')
+        v_id,
+        (p_payload->>'supplier_id')::UUID,
+        (p_payload->>'branch_id')::UUID,
+        current_app_user_id(),
+        COALESCE((p_payload->>'expected_date')::DATE, CURRENT_DATE),
+        'draft',
+        NULLIF(p_payload->>'note', '')
     );
 
     FOR v_line IN SELECT value FROM jsonb_array_elements(p_payload->'lines')
@@ -48,9 +57,15 @@ BEGIN
         IF v_quantity <= 0 OR v_received_quantity < 0 OR v_received_quantity > v_quantity THEN
             RAISE EXCEPTION 'BUSINESS_QUANTITY_INVALID';
         END IF;
-        INSERT INTO PURCHASE_ORDER_DETAIL (PurchaseOrderID, VariantID, RequestedQuantity, ReceivedQuantity, UnitPrice)
+
+        INSERT INTO PURCHASE_ORDER_DETAIL (
+            PurchaseOrderID, VariantID, RequestedQuantity, ReceivedQuantity, UnitPrice
+        )
         VALUES (
-            v_id, (v_line->>'variant_id')::UUID, v_quantity, v_received_quantity,
+            v_id,
+            (v_line->>'variant_id')::UUID,
+            v_quantity,
+            v_received_quantity,
             COALESCE((v_line->>'unit_price')::DECIMAL, (v_line->>'unit_cost')::DECIMAL, 0)
         );
     END LOOP;
