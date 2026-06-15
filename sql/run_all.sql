@@ -15,3 +15,4 @@
 \i sql/16_cursor_low_stock_report.sql
 \i sql/17_admin_permission_and_demo_grants.sql
 \i sql/18_seed_suppliers.sql
+\i sql/19_legacy_auth_profile_fallback.sql
